@@ -1,0 +1,83 @@
+/* 改变vant ui 的样式颜色 */
+.vant-tab-box .van-tabs__line {
+    background-color: #4A9CF3;
+}
+.vant-tab-box .van-tabs__wrap {
+    height: 1rem !important;
+}
+.vant-tab-box .van-tabs__nav .van-tab {
+    font-size: 0.3rem;
+    color: #333;
+    line-height: 1rem;
+}
+
+.vant-dialog-box .van-dialog__footer--buttons {
+    padding: 0.4rem;
+}
+.vant-dialog-box .van-dialog__footer--buttons .van-dialog__cancel {
+    border: 1px solid #4A9CF3;
+    color: #4A9CF3;
+    border-radius:0.08rem;
+}
+
+.vant-dialog-box .van-dialog__footer--buttons .van-dialog__confirm {
+    flex: 2;
+    background-color: #4A9CF3;
+    color: #fff;
+    margin-left: 0.3rem;
+    border-radius:0.08rem;
+}
+
+.vant-day-dialog .van-dialog__cancel .van-button__text {
+    padding: 0.2rem 0.3rem;
+    border: 1px solid #609BEC;
+    color: #609BEC;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+.vant-day-dialog .van-dialog__confirm .van-button__text {
+    padding: 0.2rem 0.3rem;
+    background-color: #609BEC;
+    color: #fff;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+
+/* 查看影像支付弹窗按钮样式  start */
+.vant-user-msg {
+    max-width: 640px;
+}
+.vant-user-msg .van-dialog__footer--buttons .van-dialog__cancel .van-button__text{
+    border: 1px solid #4A9CF3;
+    padding: 0.14rem 0.5rem;
+    color: #4A9CF3;
+    -webkit-border-radius:0.1rem;
+    border-radius:0.1rem;
+}
+.vant-user-msg .van-dialog__footer--buttons .van-dialog__confirm .van-button__text {
+    background-color: #4A9CF3;
+    color: #fff;
+    padding: 0.14rem 0.3rem;
+    -webkit-border-radius:0.1rem;
+    border-radius:0.1rem;
+}
+/* 查看影像支付弹窗按钮样式 end */
+
+.bg-f { /* 全局公共背景色 */
+    background-color: #fff;
+}
+
+/* 改变 mint UI 的弹窗样式 */
+.mint-toast {
+    z-index: 3005 !important;
+}
+
+/* 影像查询提示弹框的按钮样式 */
+.mint-msgbox .mint-msgbox-btns .mint-confirm-btn {
+    max-width: 2rem;
+    margin: 0.04rem auto;
+    font-size: 0.32rem;
+    background-color: #129DFA;
+    border-radius: 4px;
+    color: #fff;
+}

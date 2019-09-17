@@ -1,0 +1,187 @@
+
+/* 弹性和的兼容 */
+
+.dis_f {
+    display: -webkit-box; 
+    display: -moz-box; 
+    display: -webkit-flex; 
+    display: -moz-flex; 
+    display: -ms-flexbox; 
+    display: flex;
+}
+.flex_c {
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    -o-flex-direction: column;
+    flex-direction: column;
+}
+
+.dis_j {
+    -moz-box-pack:center;
+    /* -webkit--moz-box-pack:center; */
+    box-pack:center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
+    -o-justify-content: center;
+    justify-content: center;
+}
+ .dis_end {      /* 内容靠右侧 */
+    -webkit-justify-content: flex-end;
+    -moz-justify-content: flex-end;
+    -ms-justify-content: flex-end;
+    -o-justify-content: flex-end;
+    justify-content: flex-end;
+}
+.dis_sb {
+    -webkit-justify-content:space-between;
+    -moz-justify-content: space-between;
+    -ms-justify-content: space-between;
+    -o-justify-content: space-between;
+    justify-content: space-between;
+}
+.dis_sa {
+    -webkit-justify-content:space-around;
+    -moz-justify-content: space-around;
+    -ms-justify-content: space-around;
+    -o-justify-content: space-around;
+    justify-content: space-around;
+}
+
+.flex_d {
+    -webkit-box-orient:vertical;
+    -webkit-box-direction:normal;
+    -moz-box-orient:vertical;
+    -moz-box-direction:normal;
+    -webkit-flex-direction:column;
+    flex-direction: column;
+}
+
+.flex_i {
+    -webkit-align-items:center;
+    box-align:center;
+    -moz-box-align:center;
+    -webkit-box-align:center;
+    align-items:center;
+}
+
+.flex-w {
+    -webkit-flex-wrap:wrap;
+    -webkit-box-lines:multiple;
+    -moz-flex-wrap:wrap;
+    flex-wrap:wrap;
+}
+
+
+/* 父元素-flex容器 */
+.flex {
+    display: -webkit-box;       
+    display: -moz-box;          
+    display: -ms-flexbox;       
+    display: -webkit-flex;      
+    display: flex;             
+    }
+     
+    /* 子元素-平均分栏 */
+    .flex1 {
+    -webkit-box-flex: 1;              
+    -moz-box-flex: 1;                 
+    -webkit-flex: 1;                    
+    -ms-flex: 1;                           
+    flex: 1;                                 
+    }
+    /* 父元素-横向排列（主轴） */
+    .flex-h {
+    /*                         
+    display: -webkit-box;             
+    display: -moz-box;               
+    display: -ms-flexbox;       
+    display: -webkit-flex;      
+    display: flex;             
+    /* 09版 */
+    -webkit-box-orient: horizontal;
+    /* 12版 */
+    -webkit-flex-direction: row;
+    -moz-flex-direction: row;
+    -ms-flex-direction: row;
+    -o-flex-direction: row;
+    flex-direction: row;
+    }
+    /* 父元素-横向换行 */
+    .flex-hw {
+    /*-webkit-box-lines: multiple;*/
+    -webkit-flex-wrap: wrap;
+    -moz-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    -o-flex-wrap: wrap;
+    flex-wrap: wrap;
+    }
+    /* 父元素-水平居中（主轴是横向才生效） */
+    .flex-hc {
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
+    -o-justify-content: center;
+    justify-content: center;
+    
+    }
+     
+    /* 父元素-纵向排列（主轴） */
+    .flex-v {
+     /*             
+        display: -webkit-box;       
+        display: -moz-box;         
+        display: -ms-flexbox;       
+        display: -webkit-flex;      
+        display: flex;             */
+    /* 09版 */
+    -webkit-box-orient: vertical;
+    /* 12版 */
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    -o-flex-direction: column;
+    flex-direction: column;
+    }
+     
+    /* 父元素-纵向换行 */
+    .flex-vw {
+    /*-webkit-box-lines: multiple;*/
+    -webkit-flex-wrap: wrap;
+    -moz-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    -o-flex-wrap: wrap;
+    flex-wrap: wrap;
+    }
+     
+    /* 父元素-竖直居中（主轴是横向才生效） */
+    .flex-vc {
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    -o-align-items: center;
+    align-items: center;
+    }
+     
+    /* 子元素-显示在从左向右（从上向下）第1个位置，用于改变源文档顺序显示 */
+    .flex-1 {
+    -webkit-box-ordinal-group: 1;    
+    -moz-box-ordinal-group: 1;       
+    -ms-flex-order: 1;                
+    -webkit-order: 1;               
+    order: 1;                       
+    }
+     
+    html, body {
+        max-width: 640px;
+        min-width: 320px;
+        min-height: 100%;
+        margin:0 auto;
+    }
+    img {
+        height: auto;
+        width: auto;
+    }
