@@ -2,8 +2,8 @@
 <template>
     <div class="imgDetails dis_f flex_d">
         <div class="section_box flex1" ref='canvasBox'>
-            <div class="section dis_f flex_i" ref='htmlBox'>
-                <div v-show='isView' class="img_box"  >
+            <div class="section dis_f flex_i" ref='htmlBox' id="zoomPic">
+                <div v-show='isView' class="img_box" >
                     <div class="html2canvas-box" ref='insetElement'>
                      <div class='html_content' ref='html' id='html'>
                         <div class="canvas_head">
@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <div v-if='cfMsg' class="inexistence">
-                    <img src="../../common/img/pic_zwcf.png" alt="" />
+                    <img src="../../../common/img/pic_zwcf.png" alt="" />
                     <p >处方不存在</p>
                 </div>
             </div>
@@ -70,16 +70,23 @@
             <div v-show="is_loading" class="footer dis_f dis_j flex_i">
                 <div class="footer-box dis_f dis_j flex_i">
                     <div>
-                        <mt-spinner type="snake"></mt-spinner>
+                        
                         <p>加载中。。。</p>
                     </div>
                 </div>
             </div>
         </transition>
+
+        <!-- 遮罩 可缩放 图片 -->
+        <section class="imgzoom_pack">
+            <div class="imgzoom_x">X</div>
+            <div class="imgzoom_img"><img src=""/></div>
+        </section>
     </div>
 </template>
 
 <script>
+import Zoom from '../../../utils/zoom'
 export default {
     data () {
         return {
@@ -89,12 +96,18 @@ export default {
             isView: false,
             cfMsg: false,
             is_loading: true,
+            is_views: false
         }
     },
     mounted () {
         this.initdata();
     },
     methods: {
+        zoomPic () {
+            Zoom.init({
+                'elem': '#zoomPic'
+            })
+        },
         initdata () {
             var self = this;
             this.$http.post('/mobile/doch5/user_recipe_detail', this.$route.query ).then(res => {
@@ -160,18 +173,19 @@ export default {
             html2canvas(shareContent, opts).then(function (canvas) {
                 var urls = canvas.toDataURL("image/jpeg", 0.7);
                 // var urls = canvas.toDataURL("image/png");
+                var pic = new Image()
+                pic.src= urls
                 _this.imgUrl = urls
                 var t = setTimeout(() => {
                     _this.isView = false;
-                    _this.$refs.htmlBox.innerHTML = '<img src="'+urls+'" style="background-color: #FFF;" alt="" />';
+                    _this.$refs.htmlBox.innerHTML = '<img src="'+urls+'" style="width: 100%"  style="background-color: #FFF;" alt="" />';
+                    _this.zoomPic();
+                    _this.$refs.htmlBox.children[0].click();
                     _this.is_loading = false;
                     clearTimeout(t)
                 }, 0)
             })
         },
-    },
-    beforeDestroy () {
-        this.$indicator.close();
     }
 }
 </script>
@@ -381,6 +395,44 @@ export default {
         }
     }
 
+    .imgzoom_pack{
+            width:100%;
+            height:100%;
+            position:fixed;
+            left:0;
+            top:0;
+            z-index: 1000;
+            background:rgba(0,0,0,0.95);
+            display:none;
+            }
+            .imgzoom_pack .imgzoom_x{
+                color:#000;
+                height:rem(30);
+                width:rem(30);
+                line-height:rem(30);
+                background: #ffffff;
+                text-align:center;
+                position:absolute;
+                right:rem(30);
+                top:rem(30);
+                border-radius: 50%;
+                z-index:10;
+                cursor:pointer;
+                display: none;
+            }
+            .imgzoom_pack .imgzoom_img{
+            width:100%;
+            height:100%;
+            position:absolute;
+            left:0;
+            top:0;
+            overflow:hidden;
+            }
+            .imgzoom_pack .imgzoom_img img{
+            width:100%;
+            position:absolute;
+            top:50%;
+            }
 
 }
 </style>

@@ -7,7 +7,8 @@
                 <div class="content-empty" v-show="isView">
                         <img src="../../common/img/pic_zwyx@2x.png" alt="" />
                         <p><span v-show='false' class="color_blue">就诊人李大牛</span>暂无影像资料</p>
-                        <div><mt-button @click.native="handleCheckImg">查看影像示例</mt-button></div>
+                        <div><mt-button @click.native="handleCheckImages">查看影像示例</mt-button></div>
+                        <div><mt-button @click.native="handleCheckImg">查看DSA示例</mt-button></div>
                     </div>
                 <!-- 内容 -->
                 <div class="content-wrap" v-show="isViewUser">
@@ -42,7 +43,7 @@
                                     <!--  -->
                                     <div v-show='val.image_type == 1'>
                                         <mt-button class="bg-f" @click.native="handleClickLookOver(val.yx_url)">立即查看</mt-button>
-                                        <mt-button class="bg-f SpecialistCheck" @click.native="handleSpecialistCheck(val.exam_id, val.idcard)">专家阅片</mt-button>
+                                        <mt-button class="bg-f SpecialistCheck" @click.native="handleSpecialistCheck(val)">专家阅片</mt-button>
                                     </div>
                                 </li>
                             </ul>
@@ -72,9 +73,11 @@ export default {
        this.initdata()
     },
     methods: {
-        handleCheckImg () { // 查看影像
-            // window.location.href = 'http://wechat.client.pacsonline.cn/index_yyk.html#/reportInfo/report?license=c57f12f695585bacb79de89030beedf8&exam_id=116bf91d37e95c60';
-            window.location.href = 'http://wechat.client.pacsonline.cn/index_yyk.html#/reportInfo/report?license=c57f12f695585bacb79de89030beedf8&exam_id=8f0d2411134615e9';
+        handleCheckImages () { // 查看影像
+            window.location.href = this.$ImageUser2;
+        },
+        handleCheckImg () { // 查看影像 DSA
+            window.location.href = this.$userImage;
         },
         initdata () {
             var self = this;
@@ -100,9 +103,10 @@ export default {
             console.log(url)
             window.location.href = url
         },
-        handleSpecialistCheck(imgid, idcard) {   // 专家阅片
-            console.log(imgid, idcard)
-            this.out('/searchDocPicServer?examid='+imgid+'&idcard='+idcard)
+        handleSpecialistCheck(val) {   // 专家阅片
+            console.log(val)
+            this.$cookie.set('BuyExpertImage', JSON.stringify(val), 1);
+            this.out('/searchDocPicServer?examid='+val.exam_id+'&idcard='+val.idcard+'&study_id='+val.study_id)
         },
         
         handleClickBuy (v) { // 支付查看
@@ -277,6 +281,9 @@ export default {
                         color: #469AF4;
                         font-size: rem(28);
                     }
+                }
+                div:last-child {
+                    margin-top: rem(30);
                 }
             }
             

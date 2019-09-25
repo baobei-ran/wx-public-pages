@@ -7,7 +7,10 @@
                 <a :href="'/wechat/personal?uid='+uid+''" >返回首页</a>
             </li>
             <li>
-                <router-link to='/test'>测试页</router-link>
+                <van-button plain hairline type="danger" @click='handleBack'>测试页</van-button>
+            </li>
+            <li>
+                <van-button plain hairline type="danger" @click='$router.push("/zoomImg")'>自模拟缩放</van-button>
             </li>
         </ul>
     </div>
@@ -23,6 +26,11 @@ export default {
     mounted () {
         this.url = this.$http.baseURL;
         console.log(this.$http)
+    },
+    methods: {
+        handleBack () {
+            this.$router.back()
+        }
     }
 }
 </script>

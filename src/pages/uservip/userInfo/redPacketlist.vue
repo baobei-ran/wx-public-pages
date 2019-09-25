@@ -3,7 +3,7 @@
         <ul class="red_packet" id="red_packet">
             <template v-for="(item, index) in liParams">
                 <li :style="{ left: item.left, animationDuration: item.durTime, webkitAnimationDuration: item.durTime}" 
-  :class="item.cls" :data-index="index" @webkitAnimationEnd="removeDom">
+  :class="item.cls" :data-index="index" @webkitAnimationEnd="removeDom" @click='removeDom'>
                     <a href='javascript:;'>
                         <i :style="{ transform: item.transforms, webkitTransform: item.transforms}"></i>
                     </a>
@@ -68,12 +68,12 @@ export default {
 }
 </script>
 
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .ser_home {
     width: 100%;
     height: 100%;
+    background: url('../../../common/img/hby.png') no-repeat;
+    background-size: cover;
 }
 .red_packet {
     display: block;

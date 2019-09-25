@@ -9,22 +9,31 @@ const router = new Router({
         {
             path: '/test:id?',
             name: 'test',
-            meta: {title: '测试'},
+            meta: {title: '测试', index: 0, keepAlive: false},
             component: Test
         },
         {
             path: '/userhome',
             name: 'userhome',
-            meta: {title: 'vip首页'},
+            meta: {title: 'vip首页', index: 1, keepAlive: false},
             component: () => import('../userInfo/userhome.vue')
         },
         {
             path: '/redPacketlist',
             name: 'redPacketlist',
-            meta: {title: '红包雨'},
+            meta: {title: '红包雨', index: 2, keepAlive: false},
             component: () => import('../userInfo/redPacketlist.vue')
+        },
+        {
+            path: '/zoomImg',
+            name: 'zoomImg',
+            component: () => import('../userInfo/zoomImg.vue')
+        },
+        {
+            path: '/canvasdata:id?',
+            name: 'canvasdata',
+            component: () => import('../userInfo/canvas.vue')
         }
-
     ]
 })
 router.onError((error) => {

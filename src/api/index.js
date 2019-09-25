@@ -181,6 +181,7 @@ export default {
         res(s.data)
       }).catch(e => {
         req(e)
+        return Promise.reject(error);
       })
     })
   }

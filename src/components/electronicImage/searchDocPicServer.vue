@@ -82,6 +82,7 @@ export default {
             timerId: '',            // 滚动时间
             exam_id: this.$route.query.examid,  // 影像 id
             idcard: this.$route.query.idcard,   // 用户 身份证
+            study_id: this.$route.query.study_id,
             docId: '',              // 选择的医生did
             order_code: '',         // 订单号
             finished: false,
@@ -255,7 +256,9 @@ export default {
                     });
                     return;
                 }
-                var obj = { did: data.did, userid: self.$cookie.get('userLogins'), exam_id: self.exam_id , idcard: self.idcard , money: data.ask_money };
+                var userImgInfo = JSON.parse(self.$cookie.get('BuyExpertImage'));
+                console.log(JSON.stringify(userImgInfo))
+                var obj = { did: data.did, userid: self.$cookie.get('userLogins'), exam_id: self.exam_id , idcard: self.idcard , money: data.ask_money, study_id: self.study_id, hos_info: JSON.stringify(userImgInfo) };
                 console.log(obj)
                 self.$http.post('/mobile/WxSeeImage/buy_doctor_image_pay', obj).then(res => {
                     console.log(res)

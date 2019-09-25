@@ -1,17 +1,52 @@
 <template>
   <div id="app">
-      <keep-alive>
-          <router-view v-if='$route.meta.keeepAlive'></router-view>
-      </keep-alive>
-      <router-view v-if='!$route.meta.keeepAlive'></router-view>
+    <!-- <transition :name="transitionName"> -->
+        <keep-alive>
+            <router-view v-if='$route.meta.keepAlive'></router-view>
+        </keep-alive>
+        <router-view v-if='!$route.meta.keepAlive'></router-view>
+        <!-- <router-view class="app-router"/> -->
+    <!-- </transition> -->
   </div>
 </template>
 <script>
 export default {
-  name: 'uservipApp'
+  name: 'uservipApp',
+  data () {
+    return {
+      transitionName: 'slide-right',
+    }
+  },
+  watch: {
+   '$route' (to, from){
+      let isBack = to.meta.index;
+      let isBack2 = from.meta.index;
+      if(isBack < isBack2) {
+        this.transitionName = 'slide-right'
+      } else {
+        this.transitionName = 'slide-left'
+      }
+      this.$router.isBack = false
+    }
+  }
 }
 </script>
 <style lang='scss'>
+.slide-left-enter,
+.slide-right-leave-active {
+  opacity: 0;
+  -webkit-transform: translate(100%, 0);
+  transform: translate(100%, 0);
+}
+
+
+.slide-left-leave-active,
+.slide-right-enter {
+  opacity: 0;
+  -webkit-transform: translate(-100%, 0);
+  transform: translate(-100%, 0);
+}
+
 html, body, #app {
   width:100%;
   height: 100%;
@@ -27,6 +62,14 @@ html, body, #app {
   -o-flex-direction: column;
   -webkit-flex-direction: column;
   flex-direction: column;
+}
+.app-router {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

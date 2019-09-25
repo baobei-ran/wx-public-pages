@@ -41,8 +41,9 @@ export default {
     mounted () {
         var self = this;
         var userMsg = JSON.parse(self.$cookie.get('BuyImage'));
+        // console.log(userMsg)
         this.userMsg = userMsg;
-        this.$http.post('/mobile/WxSeeImage/see_one_image', { userid: this.uid, hospital_name: userMsg.hospital , exam_id: userMsg.exam_id  }).then(res => {
+        this.$http.post('/mobile/WxSeeImage/see_one_image', { userid: this.uid, hospital_name: userMsg.hospital , exam_id: userMsg.exam_id, study_id: userMsg.study_id }).then(res => {
                 console.log(res)
                 if (res.code == 0) {
                     self.money = res.price;
@@ -65,7 +66,6 @@ export default {
             this.wxbuy(this.userMsg)
         },
         wxbuy (v) {
-            console.log(v)
             var self = this;
             if (!self.$isMoble) {
                 self.$toast({
@@ -75,7 +75,7 @@ export default {
                 });
                 return;
             }
-            self.$http.axios('/mobile/WxSeeImage/user_image_pay', { userid: this.uid, exam_id: v.exam_id , idcard: v.idcard, hos_name: v.hospital, hos_info: v, exam_datetime: v.exam_datetime, exam_class: v.exam_class, patient_num: v.patient_num }).then(response => {
+            self.$http.axios('/mobile/WxSeeImage/user_image_pay', { userid: this.uid, exam_id: v.exam_id , idcard: v.idcard, hos_name: v.hospital, hos_info: JSON.stringify(v), exam_datetime: v.exam_datetime, exam_class: v.exam_class, patient_num: v.patient_num, study_id: v.study_id }).then(response => {
                 console.log(response)
                 if (response.code == 1) {
                     self.wxsjk(response.data)
@@ -89,7 +89,7 @@ export default {
                     });
                 }
             }).catch(err => {
-                
+                console.log(err)
             })
         },
         wxsjk (data) {  // 调起微信支付

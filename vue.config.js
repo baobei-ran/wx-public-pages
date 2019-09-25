@@ -10,9 +10,9 @@ var pageList = {
     filename: 'index.html',
     chunks: ['chunk-vendors', 'chunk-common', 'index']
   },
-  uservip: {
-    entry: './src/pages/uservip/uservip.js',
-    template: 'public/uservip.html',
+  uservip: {  //和路由中的命名一样
+    entry: './src/pages/uservip/uservip.js', //关联对应js文件作为入口
+    template: 'public/uservip.html',        // html文件名称
     filename: 'uservip.html'
   }
 }
@@ -121,10 +121,10 @@ module.exports = {
         config.plugins.delete('prefetch')
       }
       // 用cdn方式引入
-      // config.externals({
-      //   'vue': 'Vue',
-      //   'vue-router': 'VueRouter',
-      // })
+      config.externals({
+        'vue': 'Vue',
+        'vue-router': 'VueRouter',
+      })
     }
   },
   parallel: require("os").cpus().length > 1, // 构建时开启多进程处理babel编译
