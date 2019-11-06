@@ -10,9 +10,9 @@ import '@/common/js/rem.js'
 import '@/common/js/filter'
 import "@/common/js/ios.js"
 import api from '@/api';
-import { Popup } from 'vant';
+import { Popup, Toast } from 'vant';
 
-Vue.use(Popup);
+Vue.use(Popup).use(Toast);
 Vue.prototype.$http = api
 var VueCookie = require('vue-cookie');
 Vue.use(VueCookie);

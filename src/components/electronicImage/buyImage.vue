@@ -43,12 +43,14 @@ export default {
         var userMsg = JSON.parse(self.$cookie.get('BuyImage'));
         // console.log(userMsg)
         this.userMsg = userMsg;
-        this.$http.post('/mobile/WxSeeImage/see_one_image', { userid: this.uid, hospital_name: userMsg.hospital , exam_id: userMsg.exam_id, study_id: userMsg.study_id }).then(res => {
+        this.$http.post('/mobile/WxSeeImage/see_one_image', { userid: this.uid, hos_id: userMsg.hid, exam_id: userMsg.exam_id, study_id: userMsg.study_id }).then(res => {
                 console.log(res)
                 if (res.code == 0) {
                     self.money = res.price;
                 } else if (res.code == 1) {
-                    window.location.href = res.yx_url
+                    // window.location.href = res.yx_url
+                    self.$cookie.set('_USERIMAGE', res.yx_url)
+                    self.$router.replace('/userCheckDetails')
                 } else {
                     self.$toast({
                         message: res.msg,
@@ -75,7 +77,7 @@ export default {
                 });
                 return;
             }
-            self.$http.axios('/mobile/WxSeeImage/user_image_pay', { userid: this.uid, exam_id: v.exam_id , idcard: v.idcard, hos_name: v.hospital, hos_info: JSON.stringify(v), exam_datetime: v.exam_datetime, exam_class: v.exam_class, patient_num: v.patient_num, study_id: v.study_id }).then(response => {
+            self.$http.axios('/mobile/WxSeeImage/user_image_pay', { userid: this.uid, exam_id: v.exam_id , idcard: v.idcard, hos_name: v.hospital, hos_info: JSON.stringify(v), exam_datetime: v.exam_datetime, exam_class: v.exam_class, patient_num: v.patient_num, study_id: v.study_id, hos_id: v.hid }).then(response => {
                 console.log(response)
                 if (response.code == 1) {
                     self.wxsjk(response.data)
@@ -152,7 +154,9 @@ export default {
                         position: 'middle',
                         duration: 2000
                     });
-                    window.location.href = self.yx_url     // 成功后跳转到影像页    
+                    // window.location.href = self.yx_url     // 成功后跳转到影像页 
+                    self.$cookie.set('_USERIMAGE', self.yx_url)
+                    self.$router.replace('/userCheckDetails')   // 成功后跳转到影像页 
                 } else {
                     self.$toast({
                         message: res.msg,

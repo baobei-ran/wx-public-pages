@@ -1,8 +1,14 @@
 import axios from 'axios';
 // var baseURL = document.location.origin;  // 获取 url 的域名
 // var baseURL = window.location.protocol+"//"+window.location.host; // 获取 url 的域名兼容ie
-var baseURL = 'http://test99.yunyikang.cn'; // 测试
-// var baseURL="https://www.yunyikang.cn";       // 正式
+
+// console.log(process.env.NODE_ENV)
+if (process.env.NODE_ENV === 'production') {
+  var baseURL = window.location.protocol+"//"+window.location.host; 
+} else {
+  var baseURL = 'http://test99.yunyikang.cn'; // 测试
+  // var baseURL="https://www.yunyikang.cn";       // 正式
+}
 let http = axios.create({
   baseURL: baseURL,
   withCredentials: true,
@@ -181,7 +187,7 @@ export default {
         res(s.data)
       }).catch(e => {
         req(e)
-        return Promise.reject(error);
+        return Promise.reject(e);
       })
     })
   }

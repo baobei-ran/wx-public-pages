@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Test from '../userInfo/test.vue'
+import Test from '../userInfo/test.vue';
+import Rate from '../userInfo/rate.vue'
 Vue.use(Router);
 const router = new Router({
     // mode: 'history',
@@ -33,7 +34,12 @@ const router = new Router({
             path: '/canvasdata:id?',
             name: 'canvasdata',
             component: () => import('../userInfo/canvas.vue')
-        }
+        },
+        {
+            path: '/rate',
+            name: 'rate',
+            component: Rate
+        },
     ]
 })
 router.onError((error) => {

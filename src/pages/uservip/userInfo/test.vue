@@ -62,7 +62,9 @@ export default {
     },
     methods: {
         showPopup() {
-            this.show = true;
+            // this.show = true;
+            console.log('hahaha')
+            this.$router.push('/rate')
         },
         handlebtn () {
             this.loading = true;

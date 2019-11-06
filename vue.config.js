@@ -135,7 +135,7 @@ module.exports = {
     index: "index.html", // 默认启动serve 打开index页面
     open: false,
     // host: "192.168.1.8",
-    host: "192.168.8.107",
+    // host: "192.168.1.151",
     // host: "localhost",
     port: 8080,
     https: false,

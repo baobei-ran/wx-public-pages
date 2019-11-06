@@ -10,24 +10,49 @@
                 <div v-if='datalist.length'>
                     <div class="list">
                         <div class="commons await" v-for='(val, i) in datalist' :key='i'>
-                            <h4>{{ val.hospital_name }}</h4>
-                            <dl class="dis_f flex-vc"  @click='Clickdetail(val.did)'>
-                                <dt><img v-lazy="$http.baseURL+val.picture" :key="val.picture" alt="" /></dt>
-                                <dd>
-                                    <p>
-                                        <span>{{ val.true_name }}</span>
-                                    </p>
-                                    <p>
-                                        <span>{{ val.gname }}</span> | <span>{{ val.department_name }}</span>
-                                    </p>
-                                </dd>
-                            </dl>
-                            <div class="ckBtn">
+                            <!-- <h4>{{ val.hospital_name }}</h4> -->
+                            <div class="con-doc">
+                                <dl class="dis_f flex-vc" @click='Clickdetail(val.did)' >
+                                    <dt>
+                                        <div>
+                                            <img v-lazy="$http.baseURL+val.picture" :key="val.picture" alt="" />
+                                        </div>
+                                    </dt>
+                                    <dd>
+                                        <p>
+                                            <span>{{ val.true_name }}</span> |
+                                            <span>{{ val.gname }}</span> | <span>{{ val.department_name }}</span>
+                                            <b v-if='i == 0'>最新关注</b>
+                                        </p>
+                                        <p>{{ val.hospital_name }}</p>
+                                    </dd>
+                                </dl>
+                            </div>
+                            <div class="doc-tag">
+                                <ul>
+                                    <li v-for='item in val.business'>
+                                        <span class="bg-orange" v-if='item == 6'>可开处方</span>
+                                        <span class="bg-blue" v-if='item == 15'>可免费咨询</span>
+                                        <span class="bg-blue" v-if="item == 1">可预约门诊</span>
+                                        <span class="bg-blue" v-if='item == 14'>可阅片</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="icon-btn">
+                                <ul class="dis_f dis_sb">
+                                    <li @click='handerOnce(val.did)'><img src="../../common/icon/icon_ljzx@2x.png" alt="" /><p>立即咨询</p></li>
+                                    <li @click='handerImage(val)'><img src="../../common/icon/icon_ypzx@2x.png" alt="" /><p>阅片服务</p></li>
+                                    <li @click='Clickdetail(val.did)' v-if='val.is_offyy'><img src="../../common/icon/icon_yymz@2x.png" alt="" /><p>预约门诊</p></li>
+                                    <li v-if='!val.is_offyy'><img src="../../common/icon/icon_yymz_h@2x.png" alt="" /><p>预约门诊</p></li>
+                                    <li @click="handerDetail(val.did, val.status)"><img src="../../common/icon/icon_zxjl@2x.png" alt="" /><p>咨询记录</p></li>
+                                </ul>
+                            </div>
+                            <!-- <div class="ckBtn">
                                 <span class="orange" v-if='val.status == 9' ><mt-button @click.native="handerOnce(val.did)" >阅片服务中</mt-button></span>
                                 <span class="blue" v-if='!val.status'><mt-button @click.native="handerOnce(val.did)" >立即咨询</mt-button></span>
                                 <span class="orange" v-if='val.status == 3'><mt-button @click.native="handerOnce(val.did)" >付费问诊中</mt-button></span>
                                 <span><mt-button @click.native="handerDetail(val.did, val.status)">咨询记录</mt-button></span>
-                            </div>
+                            </div> -->
                         </div>
                         
                     </div>
@@ -107,6 +132,23 @@ export default {
                         if (data[i].did) {
                             arr.push(data[i])
                         }
+                        if (data[i].business) {
+                            var is_yy = false
+                            var tag = data[i].business.split(',');
+                            tag = tag.filter(v => {
+                                return v !== ''
+                            })
+                            tag.sort((a,b) => {
+                                return a - b
+                            })
+                            tag.map(v => {
+                                if (v == 1) {
+                                    is_yy = true
+                                }
+                            })
+                            data[i].is_offyy = is_yy;
+                            data[i].business = tag
+                        }
                     }
                     self.datalist = arr;
                     if (self.datalist.length <= 0) {
@@ -119,6 +161,9 @@ export default {
                     self.datalist = []
                 }
             })
+        },
+        handerImage(v) { // 阅片服务
+            this.$router.push('/searchImage?did='+v.did+'&status=1&money='+v.ask_money)
         },
         handleClick() {         // 立即找医生
             this.out('searchdoctor')
@@ -186,7 +231,7 @@ export default {
 .doctor {
     width: 100%;
     height: 100%;
-    background: #fafafa;
+    background: #F4F4F4;
     font-size: rem(14);
     
     .section {
@@ -216,10 +261,14 @@ export default {
         .list {
             width: 100%;
             font-size: rem(12);
-
+            padding: rem(7.5) rem(15);
+            margin-top: rem(7.5);
                .commons {
                     width: 100%;
-                    margin-bottom: rem(12);   
+                    margin-bottom: rem(12);  
+                    background-color: #fff;
+                    -webkit-border-radius:rem(5);
+                    border-radius:rem(10);
                     > h4 {
                         width: 100%;
                         height: rem(40);
@@ -230,35 +279,46 @@ export default {
                         padding: 0 rem(15); 
                     
                     }
+                .con-doc {
+                    padding: 0 rem(5);
                     > dl {
                         width: 100%;
                         height: rem(72);
                         padding: 0 rem(15); 
+                        
                         dt {
-                            width: rem(54);
-                            height: rem(54);
-                            -webkit-border-radius: 100%;
-                            border-radius: 100%;
-                            overflow: hidden;
-                            position: relative;
-                            >img[lazy=loaded] {
+                            margin-top: rem(5);
+                            div {
                                 width: rem(54);
                                 height: rem(54);
-                                max-width: rem(54);
-                                max-height: rem(54);
                                 -webkit-border-radius: 100%;
                                 border-radius: 100%;
-                            }
-                            > img[lazy=loading] {
-                                position: absolute;
-                                left: 0;
-                                right: 0;
-                                bottom: 0;
-                                top: 0;
-                                width: 0.4rem;
-                                margin: auto;
-                                background: url("../../common/images/lazy.gif") no-repeat;
-                                background-size: cover;
+                                overflow: hidden;
+                                position: relative;
+                                object-fit: cover;
+                                >img[lazy=loaded] {
+                                    
+                                    width: rem(54);
+                                    height: rem(54);
+                                    display: block;
+                                    // max-width: rem(54);
+                                    // max-height: rem(54);
+                                    -webkit-object-fit: cover; 
+                                    object-fit: cover; 
+                                    -webkit-border-radius: 100%;
+                                    border-radius: 100%;
+                                }
+                                > img[lazy=loading] {
+                                    position: absolute;
+                                    left: 0;
+                                    right: 0;
+                                    bottom: 0;
+                                    top: 0;
+                                    width: 0.4rem;
+                                    margin: auto;
+                                    background: url("../../common/images/lazy.gif") no-repeat;
+                                    background-size: cover;
+                                }
                             }
                             
                         }
@@ -266,14 +326,86 @@ export default {
                             padding-left: rem(15);
                             color: #333;
                             font-size: rem(14);
+                            padding-top: rem(10);
                             > p {
-                                line-height: rem(19);
+                                line-height: rem(20);
+                                b {
+                                    font-size: rem(10);
+                                    margin-left: rem(6);
+                                    border: 1px solid #129DFA;
+                                    padding: rem(2) rem(4);
+                                    line-height: rem(24);
+                                    background: #129DFA;;
+                                    border-radius: rem(2);
+                                    color: #FFF;
+                                    vertical-align: bottom;
+                                }
+                                span {
+                                    color: #808080;
+                                }
+                                span:first-child {
+                                    color: #333;
+                                    font-size: rem(16);
+                                }
                             }
                             p:last-child {
-                                margin-top: rem(5);
+                                margin-top: rem(10);
+                                color: #333;
+                                font-size: rem(12);
                             }
                         }
                     }
+                }
+                .doc-tag {
+                    width: 100%;
+                    padding: 0 rem(15);
+                    margin-top: rem(4);
+                    ul {
+                        width: 100%;
+                        padding: 0 0 rem(12) rem(65);
+                        border-bottom: 1px dashed #E6E6E6;
+                        li {
+                            display: inline-block;
+                            span {
+                                display: block;
+                                padding:rem(4.4) rem(2.4) rem(3);
+                                margin: rem(3);
+                                border-radius: rem(3);
+                                font-size: rem(12);
+                            }
+                            .bg-blue {
+                                background: #EBF5FF;
+                                color: #4A9CF4;
+                            }
+                            .bg-orange {
+                                color: #FFBC00;
+                                background: #FFF8E3;
+                            }
+                        }
+                    }
+                }
+                .icon-btn {
+                    width: 100%;
+                    padding: rem(15);
+                    ul {
+                        overflow: hidden;
+                        li {
+                            float: left;
+                            width: 25%;
+                            img {
+                                display: block;
+                                margin: 0 auto;
+                                width: rem(30);
+                            }
+                            p {
+                                text-align: center;
+                                font-size: rem(12);
+                                color: #333;
+                                margin-top: rem(7.5);
+                            }
+                        }
+                    }
+                }
                     .ckBtn {
                         width: 100%;
                         height: rem(49);
@@ -315,7 +447,7 @@ export default {
 
 
                 }
-        
+            
         }
     }
     .footer {

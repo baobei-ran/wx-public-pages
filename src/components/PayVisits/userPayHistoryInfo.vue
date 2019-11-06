@@ -7,10 +7,10 @@
                     <dt></dt>
                     <dd>暂无数据</dd>
                 </dl>
-                <van-pull-refresh v-model="isLoading" @refresh="onRefresh" pulling-text='下拉加载更多' loosing-text='释放即可加载'>
+                <van-pull-refresh style="height: 100%;" v-model="isLoading" @refresh="onRefresh" pulling-text='下拉加载更多' loosing-text='释放即可加载'>
                <div class="userMsg_box" v-for='(val, i) in msgList' :key='i'>
                     <div class="time"><span>{{ val.chat_time }}</span></div>
-                     <div class="doc" v-if='val.user1 == "doc_"+did' >
+                     <div class="doc" v-if='val.user1 == "doc"' >
                       <ul>
                           <li class="doc_img">
                               <img :src="$http.baseURL+val.uimg1" alt="" />
@@ -45,7 +45,7 @@
                           </li>
                       </ul>
                   </div>
-                  <div class="myuser" v-if='val.user1 == "user_"+uid'>
+                  <div class="myuser" v-if='val.user1 == "user"'>
                       <ul>
                           <li class="msg" v-if='val.type == "txt"'>{{ val.content }}</li>
                           <li class="msg2" v-if='val.type == "img"'><img :src="$http.baseURL+val.content" alt=""></li>
@@ -149,8 +149,23 @@ export default {
                 self.$indicator.close();
                 self.isLoading = false;
                 if (response.code == 1) {
+                    if (response.data.length > 0) {
+                        response.data.map(itm => {
+                            if (itm.user1.indexOf("doc") != -1) {
+                                itm.user1 = 'doc'
+                            }
+                            if (itm.user1.indexOf("user") != -1) {
+                                itm.user1 = 'user'
+                            }
+                        })
+                    }
                     if (self.page == 1) {
-                        self.msgList = response.data.reverse()
+                        if (response.data.length > 1) {
+                            self.msgList = response.data.reverse()
+                        } else {
+                            self.msgList = response.data
+                        }
+                        
                     } else {
                         var list = self.msgList;
                         self.msgList = response.data.reverse().concat(list)

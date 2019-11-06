@@ -1,5 +1,5 @@
 <template>
-    <div class="ser_home">
+    <!-- <div class="ser_home">
         <ul class="red_packet" id="red_packet">
             <template v-for="(item, index) in liParams">
                 <li :style="{ left: item.left, animationDuration: item.durTime, webkitAnimationDuration: item.durTime}" 
@@ -10,6 +10,9 @@
                 </li>
             </template>
         </ul>
+    </div> -->
+    <div class="iframes">
+        <iframe :src='paths' frameborder="no" scrolling="no" allowtransparency="yes" ></iframe>
     </div>
 </template>
 
@@ -20,7 +23,8 @@ export default {
         return {
             liParams: [],
             timer: null,
-            duration: 10000 // 定义时间
+            duration: 10000, // 定义时间
+            paths: 'http://wechat.client.pacsonline.cn/index_yyk.html#/reportInfo/report?license=c57f12f695585bacb79de89030beedf8&exam_id=116bf91d37e95c60&study_id=116bf91d37c7e59d'
         }
     },
     mounted () {
@@ -37,7 +41,7 @@ export default {
             let rotate = (parseInt(Math.random() * (45 - (-45)) - 45)) + "deg";  // 旋转角度
             let scales = (Math.random() * (12 - 8 + 1) + 8) * 0.1;  // 图片尺寸
             let durTime = (Math.random() * (2.5 - 1.2 + 1) + 1.2) + 's'; // 时间  1.2和1.2这个数值保持一样
-            console.log(durTime)
+            // console.log(durTime)
             this.liParams.push({left: left+'px', cls: 'move_1', transforms: 'rotate('+ rotate +') scale('+ scales +')', durTime: durTime})
 
 
@@ -45,8 +49,6 @@ export default {
                 clearTimeout(this.timer)
                 return;
             }, this.duration)
-
-
             this.timer = setTimeout( () => {
                 this.startRedPacket()
             },100)   
@@ -69,6 +71,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.iframes {
+    width: 100%;
+    height: 100%;
+    min-height: 99%;
+    overflow: hidden;
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+}
 .ser_home {
     width: 100%;
     height: 100%;

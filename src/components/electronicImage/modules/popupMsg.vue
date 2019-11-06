@@ -18,6 +18,11 @@
                     <span><i class="Color_red">*</i>身份证号码</span>
                     <input type="text" v-model='userCard' placeholder="请输入真实身份证号码"/>
                 </li>
+                <li class="user-msg">
+                    <p>医院门诊号/病历号/检查号</p>
+                    <input type="text" v-model='userNumber' placeholder=""/>
+                    <b>查看医院的就诊卡、病历本或检查报告填写</b>
+                </li>
             </ul>
         </div>
         <div class="footer">
@@ -35,7 +40,8 @@ export default {
             },
             userName: '',
             userCard: '',
-            userInfo: [{id:2,name: '父母' }, { id:3,name:'子女'}, { id:4, name:'配偶' }, { id:5, name: '兄弟姐妹'}, { id: 6, name: '其他'}],
+            userNumber: '',
+            userInfo: [{id:2,name: '父母' }, { id:4,name:'子女'}, { id:3, name:'配偶' }, { id:7, name: '兄弟姐妹'}, { id: 6, name: '其他'}],
         }
     },
     methods: {
@@ -77,6 +83,7 @@ export default {
                 tabInfo: this.tabInfo,
                 userCard: this.userCard,
                 userName: this.userName,
+                userNumber: this.userNumber,
                 isShow: false
             }
             this.$emit('handleUserImage', obj)
@@ -116,8 +123,9 @@ export default {
     .content-box {
         width: 100%;
         padding: rem(30);
-        margin-bottom: rem(200);
+        margin-bottom: rem(150);
         ul {
+            color: #333;
             li {
                 margin-top: rem(40);
                 > span {
@@ -129,6 +137,7 @@ export default {
                     height: rem(66);
                     border: 1px solid #CCC;
                     padding: 0 rem(30);
+                    border-radius: 4px;
                 }
                 
             }
@@ -159,6 +168,23 @@ export default {
                         color:#4A9CF3;
                         background-color: #EDF5FE;
                     }
+                }
+            }
+            .user-msg {
+                >p {
+                    margin-bottom: rem(20);
+                    font-size: rem(28);
+                }
+                input {
+                    margin-left: rem(170);
+                    padding: 0 rem(30);
+                }
+                >b {
+                    display: block;
+                    font-size: rem(24);
+                    margin-top: rem(20);
+                    padding-left: rem(170);
+                    color: #808080;
                 }
             }
         }

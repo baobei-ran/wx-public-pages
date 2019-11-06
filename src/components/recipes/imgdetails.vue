@@ -2,7 +2,7 @@
 <template>
     <div class="imgDetails dis_f flex_d">
         <div class="section_box flex1" ref='canvasBox'>
-            <div class="section dis_f flex_i" ref='htmlBox'>
+            <div class="section dis_f flex_i" ref='htmlBox'> 
                 <div v-show='isView' class="img_box"  >
                     <div class="html2canvas-box" ref='insetElement'>
                      <div class='html_content' ref='html' id='html'>
@@ -160,10 +160,9 @@ export default {
             html2canvas(shareContent, opts).then(function (canvas) {
                 var urls = canvas.toDataURL("image/jpeg", 0.7);
                 // var urls = canvas.toDataURL("image/png");
-                _this.imgUrl = urls
                 var t = setTimeout(() => {
                     _this.isView = false;
-                    _this.$refs.htmlBox.innerHTML = '<img src="'+urls+'" style="background-color: #FFF;" alt="" />';
+                    _this.$refs.htmlBox.innerHTML = '<img src="'+urls+'" style="width: 100%;background-color: #FFF;" alt="" />';
                     _this.is_loading = false;
                     clearTimeout(t)
                 }, 0)
@@ -200,7 +199,6 @@ export default {
         padding: rem(10) 0;
         font-size: rem(14);
         height: 100%;
-        overflow: auto;
         > img {
             width: 100%;
         }
@@ -380,7 +378,5 @@ export default {
             }
         }
     }
-
-
 }
 </style>

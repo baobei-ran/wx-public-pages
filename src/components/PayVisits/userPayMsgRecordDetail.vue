@@ -38,7 +38,8 @@
                     </div>
                     <div class="content-head-refund Color-blue bg-f" v-if='dataDetail.status == 5'>
                         <img src="../../common/img/icon_yjz@2x.png" alt="" />
-                        <span>问诊已结束</span>
+                        <span>问诊已结束<span>{{ evaluate && evaluate.is_evaluate == 1?'，已评价':'，未评价' }}</span></span>
+                        <span class="rate-btn" :class='{"rate-btn-f": dataDetail.busitype==3}' v-if="evaluate && evaluate.is_evaluate == 2" @click='handleClickRate'>立即评价</span>
                         <!-- 阅片图片提示 -->
                         <img v-show='dataDetail.busitype==9' class="haead-msg" src="../../common/img/bq_ypfw2.png" alt="" />
                     </div>
@@ -70,7 +71,11 @@
                         <li><span>问诊人</span><span>{{ dataDetail.real_name }}</span></li>
                         <!-- <li><span>检查医院</span><span v-text='dataDetail.hos'>山东省立医院</span></li> -->
                     </ul>
-
+                    <!-- 星级评价展示 -->
+                    <ul class="bg-f" v-if='evaluate && evaluate.is_evaluate == 1'>
+                        <li><span>评价星级</span><span><v-rate :disabled="true" :ints='evaluate.score' /></span></li>
+                        <li><span>评价内容</span><span>{{ evaluate.remark }}</span></li>
+                    </ul>
                 </div>
                 
                 
@@ -85,7 +90,11 @@
     </div>
 </template>
 <script>
+import Rate from '../moduleCommon/rate'
 export default {
+    components: {
+        'v-rate': Rate
+    },
     data () {
         return {
             isView: false,
@@ -97,12 +106,16 @@ export default {
             timeBox: '',        // 问诊中正计时器容器
             uid: this.$cookie.get('userLogins'),
             num: 0,
+            evaluate: null,
         }
     },
     mounted () {
         this.initdata();
     },
     methods: {
+        handleClickRate () {  // 去评价
+            this.$router.push('/userEvaluateRate?id='+this.dataDetail.number+'&did='+this.dataDetail.did+'&type=1')
+        },
         initdata () {
             var self = this;
             this.$indicator.open({
@@ -114,6 +127,7 @@ export default {
                 self.$indicator.close();
                 if (res.code == 1) {
                     self.dataDetail = res.data;
+                    self.evaluate = res.evaluate;
                     self.isView = true;
                     if (self.dataDetail.pic) {
                         var arrPic = self.dataDetail.pic.split(',');
@@ -423,13 +437,25 @@ export default {
                     width: rem(66);
                     vertical-align: middle;
                 }
-                span {
+                >span {
                     margin-left: rem(15);
                     font-size: rem(32);
                 }
                 b {
                     font-size: rem(24);
                     margin-left: rem(33);
+                }
+                .rate-btn {
+                    padding: rem(6);
+                    border: 1px solid #4A9CF3;
+                    border-radius: rem(6);
+                    font-size: rem(24);
+                    float: right;
+                    margin-top: rem(10);
+                    margin-right: rem(80);
+                }
+                .rate-btn-f {
+                    margin-right: 0;
                 }
             }
             .Color-blue {
@@ -470,6 +496,7 @@ export default {
                     span:last-child {
                         color: #333;
                         width: 73%;
+                        vertical-align: top;
                     }
                     b {
                         color: #808080;

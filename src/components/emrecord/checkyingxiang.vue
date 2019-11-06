@@ -7,8 +7,12 @@
                 <div class="content-empty" v-show="isView">
                         <img src="../../common/img/pic_zwyx@2x.png" alt="" />
                         <p><span v-show='false' class="color_blue">就诊人李大牛</span>暂无影像资料</p>
-                        <div><mt-button @click.native="handleCheckImages">查看影像示例</mt-button></div>
-                        <div><mt-button @click.native="handleCheckImg">查看DSA示例</mt-button></div>
+                        <p class="search-btn">
+                            <span class="pointer" @click='popupVisible2 = true'>输入门诊号/病历号/检查号查询</span>
+                        </p>
+                        <div v-for='(item,j) in giveList'><mt-button @click.native="handleCheckImage(item.image_url)" v-text='item.image_name'>查看影像示例</mt-button></div>
+                        <!-- <div><mt-button @click.native="handleCheckImages">查看影像示例</mt-button></div>
+                        <div><mt-button @click.native="handleCheckImg">查看DSA示例</mt-button></div> -->
                     </div>
                 <!-- 内容 -->
                 <div class="content-wrap" v-show="isViewUser">
@@ -16,9 +20,9 @@
                     <div class="content-wrap-user" v-for="(val,i) in imageList" :key='i'>
                         <div class="user-info bg-f">
                             <h1>
-                                {{ val.patient_name }}
-                                <b>|</b>
-                                {{ val.patient_sex == 'F'?"女": "男" }}
+                                {{ val.real_name }}
+                                <b v-if='val.sex'>|</b>
+                                {{ val.sex == 1?"男":val.sex == 2?"女":'' }}
                                 <b>|</b>
                                 {{ val.age }}
                             </h1>
@@ -36,11 +40,9 @@
                                 <li>
                                     <span>检查时间</span>
                                     <span class="Color-black">{{ val.exam_datetime }}</span>
-                                    <!--  -->
                                     <div v-show='val.image_type == 2'>
                                         <mt-button class="bg-f" @click.native="handleClickBuy(val)">支付查看</mt-button>
                                     </div>
-                                    <!--  -->
                                     <div v-show='val.image_type == 1'>
                                         <mt-button class="bg-f" @click.native="handleClickLookOver(val.yx_url)">立即查看</mt-button>
                                         <mt-button class="bg-f SpecialistCheck" @click.native="handleSpecialistCheck(val)">专家阅片</mt-button>
@@ -48,15 +50,24 @@
                                 </li>
                             </ul>
                         </div>
+                        <div class="search-else bg-f">
+                            <p>若还有其他影像资料<span @click='handleHao(val.real_name)'> 输入门诊号/病历号/检查号查询</span></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <mt-popup v-model="popupVisible2" :closeOnClickModal='true' style="width: 100%;overflow-y: scroll;" position="bottom" @touchmove.prevent>
+            <SearchUer v-show='popupVisible2' :real_name='real_name' @searchHide='searchHide' @handleExamineNumber='handleExamineNumber' />
+        </mt-popup>
     </div>
 </template>
 <script>
 
 export default {
+    components: {
+        SearchUer: () => import('../electronicImage/modules/searchUser')
+    },
     data () {
         return {
             isViewUser: false,                      // 数据展示
@@ -67,21 +78,55 @@ export default {
             order_code: '',                         // 订单号
             yx_url: '',                             // 支付成功跳转链接
             idcard: this.$route.query.idcard,       // 身份证号
+            giveList: [],                           // 无数据示例
+            real_name: '',
+            popupVisible2: false,
         }
     },
     mounted () {
        this.initdata()
     },
     methods: {
-        handleCheckImages () { // 查看影像
-            window.location.href = this.$ImageUser2;
+        handleHao (val) {
+            this.real_name = val;
+            this.popupVisible2 = true;
         },
-        handleCheckImg () { // 查看影像 DSA
-            window.location.href = this.$userImage;
+        searchHide (bool) {
+            this.popupVisible2 = bool;
+        },
+        handleExamineNumber (val) {    // 保存检查号
+            console.log(val)
+            this.popupVisible2 = val.isShow
+            var self = this;
+            self.$http.post('/mobile/WxSeeImage/get_examine_number', { id_card: val.userCard, exam_id: val.userNumber }).then(res => {
+                console.log(res)
+                if (res.code == 200) {
+                    self.$toast({
+                        message: '保存成功',
+                        position: 'middle',
+                        duration: 2000
+                    });
+                    self.initdata()
+                } else {
+                    self.$toast({
+                        message: res.msg,
+                        position: 'middle',
+                        duration: 3000
+                    });
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+        },
+        handleCheckImage (url) { // 查看影像
+            var time = new Date().getTime()
+            url = url+'&time='+time;
+            window.location.href = url;
         },
         initdata () {
             var self = this;
-            self.$http.post('/mobile/WxSeeImage/see_present_idcard_image', { userid: this.uid, idcard: self.idcard }).then(res => {
+            // mobile/WxSeeImage/see_present_idcard_image (1.4.0旧接口)
+            self.$http.post('/mobile/WxSeeImage/look_one_user_image', { userid: self.uid, idcard: self.idcard }).then(res => {
                 console.log(res)
                 if (res.code == 1) {
                     self.imageList = res.data;
@@ -92,6 +137,10 @@ export default {
                         self.isViewUser = false;
                         self.isView = true;
                     }
+                } else if (res.code == 3) {
+                    self.giveList = res.data;
+                    self.isViewUser = false;
+                    self.isView = true;
                 } else {
                     self.imageList = [];
                     self.isViewUser = false;
@@ -110,8 +159,8 @@ export default {
         },
         
         handleClickBuy (v) { // 支付查看
-            this.$router.push('/buyImage?uid='+this.uid);
             this.$cookie.set('BuyImage', JSON.stringify(v), 1);
+            this.$router.push('/buyImage?uid='+this.uid);
             // var self = this;
             // this.yx_url = v.yx_url;
             // this.$http.post('/mobile/WxSeeImage/see_one_image', { userid: this.uid, hospital_name: v.hospital , exam_id: v.exam_id  }).then(res => {
@@ -257,22 +306,26 @@ export default {
             .content-empty {
                 width: 100%;
                 text-align: center;
-                margin-top: rem(201);
+                margin-top: rem(180);
                 img {
                     width: rem(300);
                     height: rem(300);
                 }
                 p {
                     font-size: rem(28);
-                    margin-top: rem(30);
+                    margin-top: rem(15);
+                    padding-bottom: rem(30);
                     color: #808080;
                     span {
                         color: #469AF4;
                     }
                 }
+                .search-btn {
+                    margin-top: 0;
+                }
                 div {
                     width: 100%;
-                    margin-top: rem(60);
+                    margin-top: rem(26);
                     text-align: center;
                     button {
                         width: rem(240);
@@ -281,9 +334,6 @@ export default {
                         color: #469AF4;
                         font-size: rem(28);
                     }
-                }
-                div:last-child {
-                    margin-top: rem(30);
                 }
             }
             
@@ -368,7 +418,7 @@ export default {
                             font-size: rem(24);
                             line-height: rem(50);
                             overflow: hidden;
-                            span:first-child {
+                            > span:first-child {
                                 color: #808080;
                             }   
                             .Color-black {
@@ -390,9 +440,30 @@ export default {
                                     margin-left: rem(20);
                                 }
                             }
+                            
                         }
                     }
                 }
+
+                .search-else {
+                    width: 100%;
+                    padding: rem(30);
+                    font-size: rem(24);
+                    border-radius:rem(20) rem(20) rem(10) rem(10);
+                    border-top:1px dashed #E6E6E6;
+                    > p {
+                        margin: 0;
+                        > span {
+                            display: inline;
+                            color: #4A9CF4;
+                            cursor: pointer;
+                            padding-right: rem(30);
+                            background: url('../../common/icon/icon_enter@2x.png') no-repeat center right;
+                            background-size: contain;
+                        }
+                    }
+                }
+
                     
                 }
             }

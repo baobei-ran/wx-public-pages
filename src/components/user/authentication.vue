@@ -67,7 +67,6 @@ export default {
         },
         mounted () {
             var vm = this
-            console.log(window.history.state)
             window.onresize = function () {
             return (function () {
                 vm.showHeight = document.body.clientHeight
@@ -86,6 +85,7 @@ export default {
         },
         methods: {
             handleClick () {    // 提交
+            console.log(this.relation)
                 var self = this;
                 var idcardReg = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;   // 正则身份证
                 if (!this.relation) {
@@ -114,7 +114,7 @@ export default {
                     spinnerType: 'fading-circle',
                 });
                 var uid = this.$cookie.get('userLogins')
-                var obj = { uid:uid, name: this.userName, idcard: this.IDcard, did: self.$route.query.did?self.$route.query.did:''}
+                var obj = { uid:uid, name: this.userName, idcard: this.IDcard, did: this.$route.query.did?this.$route.query.did: '' }
                 this.$http.post('/mobile/wxauth/add_patient', obj).then(res => {
                     console.log(res)
                     Indicator.close();  // 关闭加载框

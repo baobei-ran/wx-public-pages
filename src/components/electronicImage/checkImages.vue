@@ -62,8 +62,8 @@
                         <div class="user-info bg-f">
                             <h1>
                                 {{ val.real_name }}
-                                <b v-if='val.sex'>|</b>
-                                {{ val.sex == 1? '男':val.sex == 2?"女": "" }}
+                                <b>|</b>
+                                {{ val.sex == '2'?"女": "男" }}
                                 <b>|</b>
                                 {{ val.age }}
                             </h1>
@@ -278,7 +278,7 @@ export default {
                 spinnerType: 'fading-circle'
             });
             var self = this;
-            // mobile/WxSeeImage/see_electronic_image (1.4.0旧接口)
+            // mobile/WxSeeImage/see_electronic_image (旧接口)
             self.$http.post('/mobile/WxSeeImage/look_online_image', { userid: self.uid }).then(res => {
                 console.log(res)
                 self.$indicator.close();
@@ -378,7 +378,7 @@ export default {
             console.log(data)
             this.popupVisible = data.isShow;
             var self = this;
-            // mobile/WxSeeImage/add_patient_see_image （1.4.0 旧接口）
+            // mobile/WxSeeImage/add_patient_see_image
             this.$http.post('/mobile/WxSeeImage/add_of_patient', { userid: this.uid,type: data.tabInfo.id ,name:data.userName ,idcard:data.userCard, examid: data.userNumber }).then(res => {
                 console.log(res)
                 if (res.code == 1) {
@@ -740,7 +740,6 @@ export default {
                             }
                             div {
                                 float: right;
-                                margin-bottom: 1px;
                                 button {
                                     border: #469AF4 1px solid;
                                     font-size: rem(22);

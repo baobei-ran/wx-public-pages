@@ -50,8 +50,7 @@ export default {
             }
         },
         created () {
-            var urldata = this.$route.query
-            console.log(urldata)
+            var urldata = this.$route.query;
             var uids = this.$cookie.get('userLogins') 
             if (!uids || urldata.uid) {
                 this.$cookie.set('userLogins', urldata.uid, 365)
@@ -102,7 +101,6 @@ export default {
             },
             handleClick () {    // 提交
                 var self = this;
-                // self.out('/authentication')
                 var isphone = /^1[3456789]\d{9}$/;
                 if (!this.phones && !isphone.test(this.phones)) {
                     Toast({
@@ -136,7 +134,11 @@ export default {
                             });
                         } else {
                              setTimeout(() => {
-                                self.out('/authentication')
+                                if (self.$route.query.did) {
+                                    self.out('/authentication?did='+self.$route.query.did)
+                                } else {
+                                    self.out('/authentication')
+                                }
                             }, 1000)
                         }
                        

@@ -505,7 +505,7 @@ export default {
                 });
                 this.$router.push({ path: '/chatroom', query: { did: this.did, uid: this.uid } })
             } else {
-                this.$router.push({ path: '/searchImage', query: { did: this.did, uid: this.uid, status: 1, money: money } })
+                this.$router.push({ path: '/searchImage', query: { did: this.did, status: 1, money: money } })
             }
         }
     }

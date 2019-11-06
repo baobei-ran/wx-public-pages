@@ -22,6 +22,7 @@
                         <p>尚未完善病历及健康信息</p>
                     </div>
                     <div class="emr-btn">
+                        <mt-button class="checkImage" @click.native="handleClickImage(val)">查看影像</mt-button>
                         <mt-button @click.native="handleClick(val)">完善资料</mt-button>
                     </div>
                 </div>
@@ -190,7 +191,15 @@ export default {
             this.popupVisibles = true
         },
         handleClickImage (v) {  // 查看影像
-            this.out('/checkyingxiang?idcard='+v.id_card)
+            if (v.id_card) {
+                this.out('/checkyingxiang?idcard='+v.id_card)
+            } else {
+                this.$toast({
+                    message: '患者没有身份证号，无法查看影像',
+                    position: 'middle',
+                    duration: 3000
+                });
+            }
         }
     }
 }

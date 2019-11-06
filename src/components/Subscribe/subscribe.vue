@@ -59,13 +59,13 @@
                             </div>
                         </div>
                     </div>
-
-                   
-                    
                     <!-- 已就诊 -->
                     <div>
                         <div class="commons alreadyOver" v-if='val.registration_stat == 2'>
-                            <h4>{{ val.hospital_name }}<span>已就诊</span></h4>
+                            <h4>{{ val.hospital_name }}
+                                <span v-if='val.is_evaluate == 1'>已就诊，已评价</span>
+                                <span v-else style="color: #F09F88;">已就诊，未评价</span>
+                            </h4>
                             <dl class="dis_f flex-vc">
                                 <dt><img :src="$http.baseURL + val.picture" alt=""></dt>
                                 <dd class="flex1">
@@ -78,6 +78,7 @@
                                 </dd>
                             </dl>
                             <div class="ckBtn">
+                                <mt-button class="rate-btn" v-if="val.is_evaluate == 2" @click.native="handleRate(val)">去评价</mt-button>
                                 <mt-button @click.native="clickDetail(val.registration_id)">预约详情</mt-button>
                             </div>
                         </div>
@@ -181,7 +182,10 @@ export default {
             }
 
         },  
-        
+        handleRate(val) {   // 到诊，去评价
+            this.$router.push({path: '/subscribeDetail', query: { rid: val.registration_id }})
+            // this.$router.push('/userEvaluateRate?id='+val.registration_number+'&did='+val.did+'&type=2')
+        },
         clickCancel: function (v) { // 取消预约
             console.log(v)
             this.$router.push({path: '/cancelSubscribe', query: { rid: v.registration_id }})
@@ -192,7 +196,10 @@ export default {
         payDetail: function (id) {   // 待支付详情
             this.$router.push({path: '/payDetails', query: { rid: id}})
         }
-    }
+    },
+    beforeDestroy () {
+        this.$indicator.close();
+    },
 }
 </script>
 
@@ -346,6 +353,10 @@ export default {
                         }
                         button:last-child {
                             margin-left: rem(15);
+                        }
+                        .rate-btn {
+                            border-color: #F09F88;
+                            color: #F09F88;
                         }
                     }
 

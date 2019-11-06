@@ -158,7 +158,6 @@
                   </div>
                  
                </div>
-
                   <!-- 图片上传加载样式 -->
                   <div class="ImgLoading" v-show="shows">
                     <ul>
@@ -171,6 +170,17 @@
                     </ul>
                 </div>
                 <!-- <div class='dayEnd' v-show='isUserMsg'>—— 付费问诊已结束 ——</div> -->
+                <!--星级评价展示 -->
+                <div class="starlevel" v-if='is_rateBox'>
+                    <ul>
+                      <li>
+                        <span>星级评价</span>
+                        <span><userRate :disabled='true' size='24' :ints='score' /></span>
+                      </li>
+                      <li v-if='score'>已评价</li>
+                      <li v-if='!score' class="reteShow" @click="handleRateShow">前往填写评价 ></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="footer">
@@ -201,6 +211,23 @@
                 <img :src="pics" alt="" />
             </div>
       </transition>
+      <!-- 星级评价弹框 -->
+      <mt-popup v-model="popupRate" style="width: 100%;" position="bottom" @touchmove.prevent>
+            <div class="Rate-wrap">
+              <div class="dis_f">
+                <span><i class="Color-red">*</i>星级评价：</span>
+                <userRate :disabled='false' size='25' :ints='0' @changeScore='changeScore' />
+                <div class="rate-btn">
+                    <mt-button @click.native="handleClickRate">提交</mt-button>
+                </div>
+              </div>
+              <!-- <p>点击进行五星好评</p> -->
+              <div class="dis_f textareas-box">
+                  <span>评价内容：</span>
+                  <textarea ref='inputVal' class="textareas" placeholder="请填写对此次问诊的评价，如：我的医生很 专业，回复比较及时，解决了我的问题。" v-model="userevaluate" ></textarea>
+              </div>
+            </div>
+        </mt-popup>
     </div>
 </template>
 
@@ -212,11 +239,12 @@ export default {
       name: 'chatroom',
       components: {
         Emotion: Emotion,
-        FilePic: FilePic
+        FilePic: FilePic,
+        userRate: () => import('../moduleCommon/rate')
       },
       data () {
           return {
-              isLoading: false,        // 下拉加载
+              isLoading: false,     // 下拉加载
               isModel: false,       // 查看图片遮罩
               historyList: [],      // 聊天历史记录
               docAudioIds: '',      // 历史记录播放动画
@@ -258,6 +286,16 @@ export default {
               userUpInfo: 0,          // 可以发送的消息数
               pics: '',
               isCode: 0,              // 首次进入页面获取code值来检测状态
+              // 评价参数
+              is_rateBox: false,     // 显示评价页 （第 774 行）
+              score: 0,             // 评价完后的展示
+              userScore: 0,         // 获取星级分数
+              userevaluate: '',     // 评价内容
+              popupRate: false,     // 评价弹框
+              // 评价需要 number 订单号
+              rateNumber: '',
+              is_over: false,       // 结束问诊后 = true
+              userNumber: '',
           }
       },
       created () {
@@ -323,6 +361,16 @@ export default {
         }
       },
       methods: { 
+        handleRateShow () { // 评价框显示
+            this.popupRate = true
+            this.$nextTick(function () {
+              this.$refs.inputVal.focus()
+            })
+        },  
+        changeScore (val) {  // 获取星级分数
+          this.userScore = val * 2
+          console.log(this.userScore)
+        },
         hideShade () {
           this.isModel = false
         },
@@ -395,22 +443,27 @@ export default {
           this.$http.post('/mobile/wxchat/user_title', obj).then(res => {
             self.$indicator.close();
             console.log(res)
+              self.rateNumber = res
               self.isCode = res.code;
             if (res.code == 1) {  // 图文问诊（付费问诊）
               this.userMsg = '';
               self.timerOrder(res.inquiry_time)
-              self.daoMsg = true
+              self.daoMsg = true;
+              self.userNumber = res.number;
             } else if (res.code == 2) {
+              self.userNumber = res.number;
               this.zhengTimer(res.inquiry_time);
               this.userMsg = '付费问诊中';
               if (this.$route.query.is_image_end && this.$route.query.is_image_end == 1) {  //  医生结束问诊 发起弹框
                   this.handleDialog(this.$route.query.did, this.$route.query.number);     
               }
             } else if (res.code == 3) { // 阅片问诊
+              self.userNumber = res.number;
               this.userMsg = '';
               self.timerOrder(res.inquiry_time)
               self.daoMsg = true
             } else if (res.code == 4) {
+              self.userNumber = res.number;
               this.zhengTimer(res.inquiry_time);
               this.userMsg = '阅片服务中';
               if (this.$route.query.is_image_end && this.$route.query.is_image_end == 1) {  //  医生结束问诊 发起弹框
@@ -604,7 +657,7 @@ export default {
                     var serverId = res.serverId; // 返回音频的服务器端ID
                     var audios = {to: self.docId, type:'audio', wxid: localId, serverId: serverId};  // 存进数组中
                     
-                    self.$http.post('/mobile/wxchat/index', { uid: self.uid, did: self.did, type: 3, con: serverId  }).then(res => {
+                    self.$http.post('/mobile/wxchat/index', { uid: self.uid, did: self.did, type: 3, con: serverId, number: _self.userNumber  }).then(res => {
                         if (res.code == 1) {
                             self.onTextMsg(audios)  // 存进本地
                             self.$toast({
@@ -715,7 +768,8 @@ export default {
                             self.viewTime = ''
                           }
                           self.userMsg = false;
-                          var as = setTimeout(() => {
+                          self.is_over = true;
+                          var as = setTimeout(() => { 
                             self.getHeadTitle()       // 接收消息更新信息
                             clearTimeout(as)
                           }, 1000)
@@ -724,6 +778,7 @@ export default {
                               position: 'middle',
                               duration: 3000
                           });
+                          self.is_rateBox = true;     // 结束问诊，显示评价组件
                         } else {
                             self.$toast({
                                 message: res.msg,
@@ -954,7 +1009,7 @@ export default {
         if (this.isShow === true) {
           this.isShow = false
         }
-         _self.$http.post('/mobile/wxchat/index', { uid: _self.uid, did: _self.did, type: 1, con:sendText, number: ''  }).then(res => { // 发送文本消息
+         _self.$http.post('/mobile/wxchat/index', { uid: _self.uid, did: _self.did, type: 1, con:sendText, number: _self.userNumber  }).then(res => { // 发送文本消息
               console.log(res)
                if (res.code == 1) {
                   _self.$toast({
@@ -1088,7 +1143,7 @@ export default {
               formdata.append('did', _self.did)
               formdata.append('type', 2)
               formdata.append('file', files)
-              // formdata.append('number', '')
+              formdata.append('number', _self.userNumber)
               _self.$http.formdata('/mobile/wxchat/index', formdata).then(res => {
                   if (res.code == 1) {
                      _self.$toast({
@@ -1487,18 +1542,22 @@ export default {
               this.userMsg = '';
               this.isbuyMsg = false;
               self.timerOrder(res.inquiry_time)
-              self.daoMsg = true
+              self.daoMsg = true;
+              self.userNumber = res.number;
             } else if (res.code == 2) {
+              self.userNumber = res.number;
               this.zhengTimer(res.inquiry_time);
               this.userMsg = '付费问诊中';
               this.isbuyMsg = false;
               self.daoMsg = false;
             } else if (res.code == 3) { // 付费问诊
+              self.userNumber = res.number;
               this.userMsg = '';
               this.isbuyMsg = false;
               self.timerOrder(res.inquiry_time)
               self.daoMsg = true
             } else if (res.code == 4) {
+              self.userNumber = res.number;
               self.daoMsg = false;
               this.isbuyMsg = false;
               this.zhengTimer(res.inquiry_time);
@@ -1512,7 +1571,7 @@ export default {
               self.daoMsg = false;
               this.isbuyMsg = true;
               // self.isUserMsg = true;  // 页面展示，问诊结束
-              this.getBuyDay()
+              // this.getBuyDay()
             } else if (res.code == 9) {
               self.viewTime = '';
               self.daoMsg = false;
@@ -1531,7 +1590,9 @@ export default {
               this.userMsg = '';
               self.daoMsg = false;
               this.isbuyMsg = true;
-              this.getBuyDay()
+              if (!self.is_over) {
+                this.getBuyDay()
+              }
             } else {
               self.daoMsg = false;
               this.isbuyMsg = false;
@@ -1545,6 +1606,40 @@ export default {
               });
           })
         },
+        handleClickRate () { // 星级评价提交
+          if (!this.userScore) {
+            this.$toast({
+                  message: '请点击星星，进行评价',
+                  position: 'middle',
+                  duration: 3000
+              });
+            return;
+          }
+          
+          var self = this, obj = { uid: this.uid, did: this.did, score: this.userScore, content: this.userevaluate, number: this.rateNumber.number, type: 1 };
+          self.popupRate = false;
+          self.score = self.userScore;
+          this.$http.post('/mobile/WxSeeImage/user_evaluate', obj).then(res => {
+            console.log(res)
+            if (res.code == 200) {
+              self.$toast({
+                  message: '评价成功！',
+                  position: 'middle',
+                  duration: 3000
+              });
+              self.popupRate = false;
+              self.score = self.userScore;
+            }else {
+              self.$toast({
+                  message: res.msg,
+                  position: 'middle',
+                  duration: 3000
+              });
+            }
+          }).catch(err => {
+            console.log(err)
+          })
+        }
   },
   beforeDestroy () {
       if (this.timeBox) {
@@ -1590,6 +1685,57 @@ export default {
 @function rem($px) {
   @return $px / 100 + rem;
 }
+.Rate-wrap {
+  width: 100%;
+  padding: rem(40);
+  >div {
+    position: relative;
+    span {
+      display: inline-block;
+      width: rem(200);
+      line-height: rem(50);
+      color: #333;
+    }
+    .rate-btn {
+      position: absolute;
+      right: 0;
+      width: rem(130);
+      height: rem(60);
+      button {
+        width: 100%;
+        height: 100%;
+        background: #469AF4;
+        color: #FFF;
+        font-size: rem(26);
+      }
+    }
+  }
+  >p {
+    padding-left: rem(160);
+    margin-top: rem(20);
+    color: #808080;
+    font-size: rem(24);
+  }
+  .textareas-box {
+    margin-top: rem(40);
+    >span {
+        width: rem(180);
+    }
+  }
+  .textareas {
+    width: 70%;
+    border: 1px solid #ddd;
+    height: rem(180);
+    line-height: rem(36);
+    outline: none;
+    margin: 0;
+    font-size: rem(26);
+    color: #333;
+    border-radius: 4px;
+    padding: rem(10);
+  }
+}
+  
   .userMsg_box {
               width: 100%;
               font-size: rem(28);
@@ -1739,6 +1885,9 @@ export default {
 </style>
 
 <style lang='scss' scoped>
+.Color-red {
+  color: red;
+}
 @function rem($px) {
   @return $px / 100 + rem;
 }
@@ -1839,7 +1988,35 @@ export default {
                     }
                 }
             }
-
+            .starlevel {
+                width: 100%;
+                padding: rem(30) rem(50);
+                ul {
+                  margin-top: rem(20);
+                  padding: rem(20);
+                  background: #FFF;
+                  -webkit-border-radius: rem(6);
+                  border-radius:rem(6);
+                   li {
+                     text-align: center;
+                     margin-top: rem(20);
+                     color: #808080;
+                     span {
+                       display: inline-block;
+                       line-height: rem(40);
+                       vertical-align: middle;
+                     }
+                     span:last-child {
+                       margin-left: rem(10);
+                       font-size: rem(14);
+                     }
+                   }
+                  .reteShow {
+                    padding: rem(10);
+                  }
+                   
+                }
+            }
             .dayEnd {
               width: 100%;
               margin-top: rem(50);

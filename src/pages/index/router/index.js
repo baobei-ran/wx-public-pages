@@ -93,6 +93,7 @@ import UserPayMsgRecordDetail from '@/components/PayVisits/userPayMsgRecordDetai
 // const UserPayInfo = () => import("../components/PayVisits/userPayInfo.vue");                      // 患者问诊信息(废弃)
 
 import SearchImage from '@/components/electronicImage/searchImage.vue';                          // 影像查询结果
+import CheckImages from '@/components/electronicImage/checkImages.vue';
 const SearchDocPicServer = () => import('@/components/electronicImage/searchDocPicServer.vue');  // 购买医生影像查看服务
 
 const chatRoom = () => import('@/components/webIM/chatroom' /* webpackChunkName: "amr" */);    // 聊天室
@@ -115,27 +116,27 @@ const router = new Router({
     },
     {
       path: '/personal:id?',
-      meta: { title: '个人中心',keeepAlive: true },
+      meta: { title: '个人中心', keeepAlive: true },
       component: Personal
     },
     {
       path: '/userdata',
-      meta: { 
+      meta: {
         title: '个人信息',
-        keeepAlive: true 
+        keeepAlive: true
       },
       component: Userdata
     },
     {
       path: '/activity',
       title: '图片',
-      meta: { 
+      meta: {
         keeepAlive: true,
       },
       component: Activity
     },
     {
-      path:'/agreement',
+      path: '/agreement',
       meta: {
         keeepAlive: true,
         title: '用户协议'
@@ -143,14 +144,14 @@ const router = new Router({
       component: Agreement
     },
     {
-      path:'/err404',
+      path: '/err404',
       meta: {
         title: '错误',
       },
       component: Error404
     },
     {
-      path:'/phone:id?',
+      path: '/phone:id?',
       meta: {
         title: '绑定手机号',
       },
@@ -198,12 +199,12 @@ const router = new Router({
     },
     {
       path: '/yuyuedoc:id?',          // 预约医生和支付
-      meta: {title: '预约医生信息', },
+      meta: { title: '预约医生信息', },
       name: 'yuyuedoc',
       component: Yuyuedoc
     },
     {
-      path: '/wxpaySucceed:rid?', 
+      path: '/wxpaySucceed:rid?',
       meta: { title: '支付成功' },   // 预约医生支付成功页
       name: 'wxpaySucceed',
       component: WxpaySucceed
@@ -242,19 +243,19 @@ const router = new Router({
     },
     {
       path: '/searchdoctor:id?',  // 医生筛选列表
-      name: 'searchdoctor', 
-      meta: { 
+      name: 'searchdoctor',
+      meta: {
         title: '更多医生',
         keeepAlive: true,
         isRefresh: false,
-        x:0, y:0
+        x: 0, y: 0
       },
       component: SearchSelectDoctor
     },
     {
       path: '/searchlist:id?',
       name: 'searchdoctor',
-      meta: { 
+      meta: {
         title: '更多医生',
         keeepAlive: true,
         x: 0, y: 0,
@@ -264,7 +265,7 @@ const router = new Router({
     },
     {
       path: '/doctorshoplist:id?',
-      meta: { title: '更多医生店铺', keeepAlive: true, x:0, y:0},
+      meta: { title: '更多医生店铺', keeepAlive: true, x: 0, y: 0 },
       component: DoctorShopList
     },
     {
@@ -312,7 +313,7 @@ const router = new Router({
       component: Orderdetails
     },
     
-      //  收货地址管理
+    //  收货地址管理
     {
       path: '/oerdersites:id?',     // id 下单选择地址
       name: 'oerdersites',
@@ -329,65 +330,65 @@ const router = new Router({
     },
     {
       path: '/sitelist',
-      meta: { title: '收货地址管理', keeepAlive: true},
+      meta: { title: '收货地址管理', keeepAlive: true },
       component: SiteList
     },
     {
       path: '/addsite/:id?',
-      meta: {title: '新增收货地址'},
+      meta: { title: '新增收货地址' },
       component: AddSite
     },
     {
       path: '/editsite:id?',
-      meta: {title: '编辑收货地址'},
+      meta: { title: '编辑收货地址' },
       component: EditSite
     },
-                                      // 处方订单
+    // 处方订单
     {
       path: '/recipelist',
       name: 'recipelist',
-      meta: {title: '处方订单列表',keeepAlive: true, x:0, y:0, isUseCache: false},
+      meta: { title: '处方订单列表', keeepAlive: true, x: 0, y: 0, isUseCache: false },
       component: RecipeList
     },
     {
       path: '/recipeMsg/:id',
-      meta: {title: '处方信息'},
+      meta: { title: '处方信息' },
       name: 'recipeMsg',
       component: RecipeMsg
     },
     {
       path: '/recipedrug:id?',
-      meta: {title: '处方信息'},
+      meta: { title: '处方信息' },
       name: 'recipedrug',
       component: Recipedrug
     },
     {
       path: '/chufdetails:id?',
-      meta: {title: '处方详情'},
+      meta: { title: '处方详情' },
       name: 'chufdetails',
       component: ImgDetails
     },
     {
       path: '/recipeAudit:id?',
-      meta: {title: '电子处方'},
+      meta: { title: '电子处方' },
       name: 'recipeAudit',
-      component: RecipeAudit 
+      component: RecipeAudit
     },
     {
       path: '/recipeorder:id?',
-      meta: {title: '确认订单', keeepAlive: true},
+      meta: { title: '确认订单', keeepAlive: true },
       name: 'recipeorder',
       component: Recipeorder
     },
     {
       path: '/drugpaysuccess:id?', // 支付成功页
-      meta: {title: '查看订单'},
+      meta: { title: '查看订单' },
       name: 'drugpaysuccess',
       component: Drugpaysuccess
     },
     {
       path: '/drugdetail:id?',           // 处方药品 的药品详情
-      meta: {title: '药品详情', },  
+      meta: { title: '药品详情', },
       name: 'drugdetail',
       component: Drugdetail
     },
@@ -395,25 +396,25 @@ const router = new Router({
     // 预约门诊记录
     {
       path: '/subscribe',          // 列表
-      meta: {title: '预约记录', keeepAlive: true,  x:0, y:0 },
+      meta: { title: '预约记录', keeepAlive: true, x: 0, y: 0 },
       name: 'subscribe',
       component: Subscribe
     },
     {
       path: '/cancelSubscribe:rid?',   // 取消预约
-      meta: {title: '取消预约'},
+      meta: { title: '取消预约' },
       name: 'cancelSubscribe',
       component: CancelSubscribe
     },
     {
       path: '/subscribeDetail:rid?', // 预约详情
-      meta: {title: '预约信息'},
+      meta: { title: '预约信息' },
       name: 'subscribeDetail',
       component: SubscribeDetail
     },
     {
       path: '/payDetails:rid?', // 预约详情
-      meta: {title: '预约信息'},
+      meta: { title: '预约信息' },
       name: 'payDetails',
       component: PayDetails
     },
@@ -423,25 +424,25 @@ const router = new Router({
     // 就诊成员管理
     {
       path: '/administration',
-      meta: {title: '就诊成员管理', keeepAlive: true},
+      meta: { title: '就诊成员管理', keeepAlive: true },
       name: 'administration',
       component: Administration
     },
     {
       path: '/getAdministration',
-      meta: {title: '就诊成员列表', keeepAlive: true},
+      meta: { title: '就诊成员列表', keeepAlive: true },
       name: 'getAdministration',
       component: GetAdministration
     },
     {
       path: '/administration/addmember',
-      meta: {title: '添加新成员'},
+      meta: { title: '添加新成员' },
       name: 'addmember',
       component: Addmember
     },
     {
       path: '/administration/editmember',
-      meta: {title: '修改成员信息'},
+      meta: { title: '修改成员信息' },
       name: 'editmember',
       component: Editmember
     },
@@ -450,25 +451,25 @@ const router = new Router({
 
     {
       path: '/docrecommend:id?',          //  医生推荐的预约
-      meta: {title: '预约医生', },  
+      meta: { title: '预约医生', },
       name: 'docrecommend',
       component: Docrecommend
     },
     {
       path: '/docSuspend:id?',           //  医生停诊通知
-      meta: {title: '停诊通知', },  
+      meta: { title: '停诊通知', },
       name: 'docSuspend',
       component: DocSuspend
     },
     {
       path: '/recommendDrug:id?',           // 推荐药品
-      meta: {title: '推荐药品', },  
+      meta: { title: '推荐药品', },
       name: 'recommendDrug',
       component: RecommendDrug
     },
     {
       path: '/yaorecipeorder:id?',         // 药品推荐 下单页
-      meta: {title: '确认订单'},
+      meta: { title: '确认订单' },
       name: 'yaorecipeorder',
       component: YaoRecipeorder
     },
@@ -478,37 +479,37 @@ const router = new Router({
     // 电子病历列表
     {
       path: '/emrecordlist',         // 电子病历列表
-      meta: {title: '电子病历', keeepAlive: true},
+      meta: { title: '电子病历', keeepAlive: true },
       name: 'emrecordlist',
       component: Emrecordlist
     },
     {
       path: '/emrecorddetail:id?',         // 电子病历详情
-      meta: {title: '病历详情'},
+      meta: { title: '病历详情' },
       name: 'emrecorddetail',
       component: Emrecorddetail
     },
     {
       path: '/emrdetails:id?',         // 电子病历详情
-      meta: {title: '病历详情'},
+      meta: { title: '病历详情' },
       name: 'emrdetails',
       component: Emrdetails
     },
     {
       path: '/addrecordsUserinfo:id?',         // 添加电子病历
-      meta: {title: '添加病历'},
+      meta: { title: '添加病历' },
       name: 'addrecordsUserinfo',
       component: AddrecordsUserinfo
     },
     {
       path: '/addrecordsUserClinic:id?',         // 添加电子病历
-      meta: {title: '添加病历'},
+      meta: { title: '添加病历' },
       name: 'addrecordsUserClinic',
       component: AddrecordsUserClinic
     },
     {
       path: '/checkyingxiang:id?',         // 从病例查看影像
-      meta: {title: '查询结果'},
+      meta: { title: '查询结果' },
       name: 'checkyingxiang',
       component: CheckYingXiang
     },
@@ -516,8 +517,8 @@ const router = new Router({
 
     // 付费问诊
     {
-      path: '/userPayMsgRecordList',        
-      meta: {title: '付费问诊列表', keeepAlive: true},
+      path: '/userPayMsgRecordList',
+      meta: { title: '付费问诊列表', keeepAlive: true },
       name: 'userPayMsgRecordList',
       component: UserPayMsgRecordList
     },
@@ -528,41 +529,53 @@ const router = new Router({
       component: UserPayRecordDetail
     },
     {
-      path: '/userPayMsgRecordDetail:id?',        
-      meta: {title: '患者问诊详情'},
+      path: '/userPayMsgRecordDetail:id?',
+      meta: { title: '患者问诊详情' },
       name: 'userPayMsgRecordDetail',
       component: UserPayMsgRecordDetail
     },
     
     {
       path: '/searchImage:uid?',      // 影像  
-      meta: {title: '查询结果'},
+      meta: { title: '查询结果' },
       name: 'searchImage',
       component: SearchImage
     },
     {
+      path: '/checkImages:uid?',      // 不展示的影像 （副业） 
+      meta: { title: '查看结果' },
+      name: 'checkImages',
+      component: CheckImages
+    },
+    {
       path: '/searchDocPicServer:id?',      // 购买医生查看影像  
-      meta: {title: '搜索医生', keeepAlive: true, x:0, y:0},
+      meta: { title: '搜索医生', keeepAlive: true, x: 0, y: 0 },
       name: 'searchDocPicServer',
       component: SearchDocPicServer
     },
     {
       path: '/buyWebImInfo:id?',        // 购买问诊服务
-      meta: {title: '购买问诊服务'},
+      meta: { title: '购买问诊服务' },
       name: 'buyWebImInfo',
       component: BuyWebImInfo
     },
     {
       path: '/userPayHistoryInfo:id?',        // 付费问诊历史记录
-      meta: {title: '付费问诊记录'},
+      meta: { title: '付费问诊记录' },
       name: 'userPayHistoryInfo',
       component: UserPayHistoryInfo
     },
     {
       path: '/buyImage:id?',
-      meta: {title: '电子影像'},
+      meta: { title: '电子影像' },
       name: 'buyImage',
       component: BuyImage
+    },
+    {
+      path: '/userCheckDetails', // 支付购买的影像查看示例
+      meta: { title: '电子影像' },
+      name: 'userCheckDetails',
+      component: () => import('@/components/electronicImage/userCheckImage.vue')
     },
     {
       path: '/page1:id?', // test 一下

@@ -79,7 +79,7 @@
                             <li class="swiper-slide" style="float:left;" v-for='(val, i) in swiperArr' :key='i+"_2"' v-if='val.type == 2' @click='ClickOutpatient(val)' >
                                 <h2>
                                     <img src="../../common/img/bq_mzfw.png" alt="" />
-                                    <span class="F-r">{{ val.status }}</span>
+                                    <span class="F-r" v-html="val.status"></span>
                                 </h2>
                                 <div class="dis_f flex_i">
                                     <img :src="val.pic?$http.baseURL+val.pic:''" alt="" />
@@ -188,10 +188,13 @@ export default {
             this.$router.push('/page1?uid='+this.$route.query.uid)
             // window.location.href= 'uservip.html#/test?uid='+this.$route.query.uid;
         },
+        testClick () {
+            this.out('/testImg')
+        },
         initSwiper () { // 服务
             var self = this;
             this.$http.post('/mobile/Wxauth/ongoing_service', { uid: this.$route.query.uid }).then(res => {
-                // console.log(res) 
+                console.log(res) 
                 if (res.code == 1) {
                     self.swiperArr = res.data;
                     if (self.swiperArr.length <= 0) {
@@ -265,7 +268,7 @@ export default {
                         return;
                     } 
                     if (res.auth == 2 ) {
-                        self.$route.query.did?self.$router.replace('/authentication?did='+self.$route.query.did): self.$router.replace('/authentication');
+                        self.$router.replace('/authentication')
                     }
                 }
             })
@@ -312,8 +315,18 @@ export default {
         ClickRecipe(v) { // 处方
             this.$router.push({path: '/recipeAudit', query: { id: v.id }})
         },
-        ClickOutpatient(v) {  // 门诊
-            this.$router.push({path: '/subscribeDetail', query: { rid: v.id }})
+        ClickOutpatient(v) {  // 门诊 ( 1.4.2 修改为去评价 )
+            // this.$router.push({path: '/subscribeDetail', query: { rid: v.id }})
+            if (v.did) {
+               this.$router.push('/userEvaluateRate?id='+v.id+'&did='+v.did+'&type=2') 
+            } else {
+                this.$toast({
+                    message: '此医生不存在，无法进行评价',
+                    position: 'middle',
+                    duration: 2000
+                });
+            }
+            
         },
         handleClickDetail (v) { // 医生店铺 和 药店
             console.log(v)

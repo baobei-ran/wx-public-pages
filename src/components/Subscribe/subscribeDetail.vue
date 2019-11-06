@@ -8,7 +8,9 @@
                     <div class="cancelBtn"><mt-button @click.native="cancelClick">取消预约</mt-button></div>
                 </div>
                 <div class="section_head2" v-if='yudetail.registration_stat == 2'>
-                    <h3><img src="../../common/img/icon_yjz.png" alt="">已就诊</h3>
+                    <h3><img src="../../common/img/icon_yjz.png" alt="">已就诊 <span>{{ yudetail.evaluate && yudetail.evaluate.is_evaluate == 1?'，已评价':'，未评价' }}</span></h3>
+                    <button class="rate-btn"  @click="handleClickRate" v-if="yudetail.evaluate && yudetail.evaluate.is_evaluate == 2" >立即评价</button>
+                    <!--  -->
                 </div>
                 <div class="section_head2" v-if='yudetail.registration_stat == 4'>
                     <h3><img src="../../common/img/icon_yqx.png" alt="">已取消</h3>
@@ -59,6 +61,13 @@
                     </ul>
                 </div>
                 
+                <div class="refundTime" v-if="yudetail.evaluate && yudetail.evaluate.is_evaluate == 1">
+                    <ul>
+                        <li><span style="line-height: 0.48rem;">评价星级</span><span><v-rate :disabled="true" :ints='yudetail.evaluate.score' /></span></li>
+                        <li><span>评价内容</span><span>{{ yudetail.evaluate.remark }}</span></li>
+                    </ul>
+                </div>
+
                 <div class="refundTime" v-if='yudetail.registration_stat == 4'>
                     <ul>
                         <li>
@@ -71,6 +80,7 @@
                         </li>
                     </ul>
                 </div>
+
             </div>
 
         </div>
@@ -79,8 +89,12 @@
 </template>
 
 <script>
+import Rate from '../moduleCommon/rate'
 export default {
     name: 'subscribeDetail',
+    components: {
+        'v-rate': Rate
+    },
     data () {
         return {
             yudetail: {},
@@ -95,6 +109,9 @@ export default {
         this.initdata() 
     },
     methods: {
+        handleClickRate () {  // 去评价
+            this.$router.push('/userEvaluateRate?id='+this.yudetail.registration_number+'&did='+this.yudetail.did+'&type=2')
+        },
         initdata () {
             var self = this;
                 this.rid = this.$route.query.rid;
@@ -187,6 +204,17 @@ export default {
                     font-size: rem(12);
                     color: #808080;
                 }
+                .rate-btn {
+                    float: right;
+                    line-height: rem(20);
+                    font-size: rem(13);
+                    padding-top: rem(4);
+                    margin-top: rem(22);
+                    color: #469AF4;
+                    border-radius: rem(4);
+                    border: 1px solid #469AF4;
+                    background: #fff;
+                }
             }
             
             .section_con {
@@ -245,10 +273,9 @@ export default {
                         span {
                             display: block;
                             float: left;
-                            line-height: rem(18);
+                            line-height: rem(20);
                         }
                         span:first-child {
-                           
                             color: #808080;
                             margin-right: rem(14);
                         }
