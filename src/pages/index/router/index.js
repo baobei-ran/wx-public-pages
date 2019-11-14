@@ -19,9 +19,9 @@ const Mydoctor = () =>import('@/components/doctor/mydoctor')  // 我的医生(1.
 import DoctorDetail from '@/components/doctor/doctordetail'  // 医生详情
 import Yuyuedoc from '@/components/doctor/yuyuedoc'          // 预约医生信息(1.1.0)
 import WxpaySucceed from '@/components/doctor/wxpaySucceed'  // 预约支付成功(1.1.0)
-import DoctorShop from '@/components/doctor/doctorshop'      // 医生店铺
-import ShopDetail from '@/components/doctor/shopdetail'      // 医生店铺商品详情
-import Doctororder from '@/components/doctor/doctororder'    // 商品下单
+const DoctorShop = () =>import(/* webpackChunkName: "shop" */ '@/components/doctor/doctorshop')     // 医生店铺
+const ShopDetail = () =>import(/* webpackChunkName: "shop" */ '@/components/doctor/shopdetail')     // 医生店铺商品详情
+import Doctororder from '@/components/doctor/doctororder'            // 商品下单
 
 const Dingdan = () => import('@/components/goods/orderList');   // 商品订单（1.2）
 import Orderdetails from "@/components/goods/orderdetails";                      // 订单信息（1.2）
