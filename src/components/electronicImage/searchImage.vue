@@ -14,7 +14,7 @@
                 </div>
                 <!-- 内容 -->
                 <div class="content-wrap" v-show="isViewUser">
-                    <div class="head-msg">查询到以下就诊人的电子影像  <span class="filters" @click='is_filtrate = !is_filtrate'>{{ filtrateName?filtrateName:'筛选'}}</span>
+                    <div class="head-msg">查询到以下就诊人的数字影像  <span class="filters" @click='is_filtrate = !is_filtrate'>{{ filtrateName?filtrateName:'筛选'}}</span>
                         <ul class="user-selects" v-show="is_filtrate">
                             <li class="user-option" v-for="(ur, index) in userList" :key='index+"_user"'  @click='handleFilterUser(ur)'>{{ ur.name }}</li>
                         </ul>
@@ -63,7 +63,7 @@
                             <h1>
                                 {{ val.real_name }}
                                 <b v-if='val.sex'>|</b>
-                                {{ val.sex == 1? '男':val.sex == 2?"女": "" }}
+                                {{ val.sex == 1? "男":val.sex == 2?"女": "" }}
                                 <b>|</b>
                                 {{ val.age }}
                             </h1>
@@ -118,7 +118,7 @@
             </div>
         </div>
         <div class="electronicImage-footer">
-            <mt-button @click.native="handleClickImage">查看其他就诊人的电子影像</mt-button>
+            <mt-button @click.native="handleClickImage">查看其他就诊人的数字影像</mt-button>
         </div>
         <mt-popup v-model="popupVisible" style="width: 100%;overflow-y: scroll;" position="bottom" @touchmove.prevent>
             <PopupMsg @shadehide='shadehide' @handleUserImage='handleUserImage'/>
@@ -309,7 +309,7 @@ export default {
                         self.isView = true;
                     }
                 } else if (res.code == 3) {
-                    self.giveList = res.data;
+                    self.giveList = res.example;
                     self.isViewUser = false;
                     self.isView = true;
                 } else {
@@ -398,7 +398,10 @@ export default {
         },
         handleClickBuy (v) { // 支付查看
             console.log(v)
+            console.log(this.$route.fullPath)
+            var urlss = this.$route.fullPath;
             this.$cookie.set('BuyImage', JSON.stringify(v), 1);
+            this.$cookie.set('URLPAY', JSON.stringify(urlss), 1);
             this.$router.push('/buyImage?uid='+this.uid);
             // var self = this;
             // this.$http.post('/mobile/WxSeeImage/see_one_image', { userid: this.uid, hospital_name: v.hospital , exam_id: v.exam_id  }).then(res => {

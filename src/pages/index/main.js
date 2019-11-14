@@ -4,7 +4,7 @@ Es6Promise.polyfill();
 import Vue from "vue";
 import '@/common/css/reset.css';
 import App from "./App.vue";
-import router from "./router/index";
+import router from "./router/index.js";
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import '@/common/css/flex.css'
@@ -20,7 +20,7 @@ Vue.use(VueWechatTitle)
 
 Vue.config.productionTip = false;
 
-import localStorage from '../../utils/cz-storage';
+import localStorage from '@/utils/cz-storage';
 Vue.prototype.$storage = localStorage;
 
 Vue.use(MintUI)
@@ -48,19 +48,16 @@ window.addEventListener('online',  function() {
     window.location.reload()
   },0)
  })
-
+import '@/utils/mate.js'
 // 环信挂载全局
-import { conn, WebIM } from '../../common/js/WebIM.js';
+import { conn, WebIM } from '@/common/js/WebIM.js';
 
 Vue.prototype.$WebIM = WebIM
 Vue.prototype.$imConn = conn;
-import isMoble from '../../utils/ismoble';
+import isMoble from '@/utils/ismoble';
 Vue.prototype.$isMoble = isMoble;
 
-Vue.prototype.$userImage = 'http://wechat.client.pacsonline.cn/index_yyk.html#/reportInfo/report?license=c57f12f695585bacb79de89030beedf8&exam_id=116d4dbaa317fec7&study_id=116d4dbaa1c1cc29';
-Vue.prototype.$ImageUser2 = 'http://wechat.client.pacsonline.cn/index_yyk.html#/reportInfo/report?license=c57f12f695585bacb79de89030beedf8&exam_id=116bf91d37e95c60&study_id=116bf91d37c7e59d'
-
-import '../../utils/vant';
+import '@/utils/vant';
 
 function isIos(){
   var u = navigator.userAgent;

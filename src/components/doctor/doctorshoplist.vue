@@ -1,7 +1,11 @@
 <template>
                     <!--  更多医生店铺 -->
     <div class="doctorshoplist dis_f flex_d">
-        <div class="content flex1" ref='scrolls'>   
+         <div class="empty" v-if="is_emp">
+                <img src="../../common/img/pic_zwsp.png" alt="" />
+                <p>暂无数据</p>
+            </div>
+        <div class="content flex1" ref='scrolls'>  
             <div class="content_box">
                 <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
                     <div class="take Mg-T"  v-for='(val,i) in alllist' :key='i'>
@@ -28,15 +32,10 @@
                                 <!-- <li class="right"><img src="../../common/img/icon_enter.png" alt="" /></li> -->
                             </ul>
                         </div>
-                        
-                            
-                            
-                       
                     </div>
-                    
-                </div>
-                    <div class="drop-up" v-if="dropup">—— 没有数据了 ——</div>
-                </div>
+            </div>
+                <div class="drop-up" v-if="dropup">—— 没有数据了 ——</div>
+            </div>
         </div>
     </div>
 </template>
@@ -54,6 +53,7 @@ export default {
             count: 0,
             uid: '',
             time: '',   // 盛放定时器
+            is_emp: false,
         }
     },
     created() {
@@ -116,9 +116,9 @@ export default {
             }
             this.$http.post('/mobile/Wxdoccenter/doc_goods', {page: this.page, num: this.limit, uid: this.uid }).then(res => {
                 console.log(res)
-                
                 if (res.code == 1) {
-                    this.busy = false
+                    this.busy = false;
+                    self.is_emp = false;
                     self.count = res.counts
                      res.data.forEach(val => {
                             var pic = val
@@ -131,9 +131,10 @@ export default {
                             }
                         })
                     if (self.page <= 1) {
-                       
-                        self.alllist = res.data
-                        
+                        self.alllist = res.data;
+                        if (self.alllist.length == self.count) {
+                            self.busy = true
+                        }
                     } 
                     else if (self.page > 1) {
                         var s = res.data
@@ -143,8 +144,12 @@ export default {
                             self.busy = true
                         }
                     }
-                   
                 } else {
+                    if (self.alllist.length == 0) {
+                        self.is_emp = true;
+                        self.busy = true
+                        return;
+                    }
                     if (self.alllist.length > 9) {
                         self.dropup = true
                     }
@@ -187,7 +192,21 @@ export default {
     .Mg-T {
         margin-top: rem(10);
     }
-   
+    .empty {
+        width: 100%;
+        margin-top: rem(120);
+        img {
+            width: rem(150);
+            height: rem(150);
+            display: block;
+            margin: 0 auto;
+        }
+        p {
+            text-align: center;
+            color: #808080;
+            font-size: rem(14);
+        }
+    }
     .content {
         width: 100%;
         overflow: auto;

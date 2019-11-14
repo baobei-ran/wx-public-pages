@@ -14,6 +14,11 @@ var pageList = {
     entry: './src/pages/uservip/uservip.js', //关联对应js文件作为入口
     template: 'public/uservip.html',        // html文件名称
     filename: 'uservip.html'
+  },
+  pacsimage: {  //和路由中的命名一样
+    entry: './src/pages/pacsimage/pacsimage.js', //关联对应js文件作为入口
+    template: 'public/pacsimage.html',        // html文件名称
+    filename: 'pacsimage.html'
   }
 }
 module.exports = {  
@@ -31,10 +36,9 @@ module.exports = {
   productionSourceMap: false, // 是否在构建生产包时生成 sourceMap 文件，false将提高构建速度
   configureWebpack: config => { // webpack配置，值位对象时会合并配置，为方法时会改写配置
     if (process.env.NODE_ENV === 'production') {
-        
       config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
-      config.plugins.push(
-        new CompressionWebpackPlugin({
+      // config.plugins.push(
+      //   new CompressionWebpackPlugin({
           // filename: info => {    // 只压缩 js
           //   return `${info.path}.gz${info.query}`
           // },
@@ -47,15 +51,14 @@ module.exports = {
           // ),
           // minRatio: 0.8,
             // 正在匹配需要压缩的文件后缀 所有指定的都压缩 
-            test: /\.(js|css|svg|woff|ttf|json|html)$/,
+            // test: /\.(js|css|svg|woff|ttf|json|html)$/,
             // 大于10kb的会压缩
-            threshold: 10240,
-            deleteOriginalAssets: false // 删除原文件
+            // threshold: 10240,
+            // deleteOriginalAssets: false // 删除原文件
             // 其余配置查看compression-webpack-plugin
-          })
-        )
+        //   })
+        // )
     }
-     // 去除console.log()
      optimization: {
       minimizer: [
          new UglifyJsPlugin ({
@@ -64,7 +67,7 @@ module.exports = {
                warnings: false,
                drop_debugger: false,
                drop_console: false,
-              //  pure_funcs: ['console.log']  // 移除 console
+               pure_funcs: ['console.log']  // 移除 console
              },
            },
            sourceMap: false,
@@ -90,10 +93,12 @@ module.exports = {
     // })
 
 },
-  chainWebpack: config => { // webpack链接API，用于生成和修改webapck配置，
+  chainWebpack: config => { // webpack链接API，用于生成和修改webapck配置
+    config.plugins.delete('prefetch');  // 删除 prefetch(预先加载模块)
     config.entry = {
       app: ['@babel/polyfill', './src/main.js'],
-      app: ['@babel/polyfill', './src/uservip_main.js']
+      app: ['@babel/polyfill', './src/uservip.js'],
+      app: ['@babel/polyfill', './src/pacsimage.js']
     }
     //修复 Lazy loading routes Error
     // config.plugin('html').tap(args => { // 多页面就报错，适合单页面
@@ -118,8 +123,8 @@ module.exports = {
         config.plugin('webpack-bundle-analyzer')
             .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
             .end();
-        config.plugins.delete('prefetch')
       }
+      
       // 用cdn方式引入
       config.externals({
         'vue': 'Vue',

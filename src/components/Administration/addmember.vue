@@ -4,7 +4,7 @@
         <div class="addmember dis_f flex_c" >
             <div class="section flex1" >
                 <div class="section_msg">
-                    <div class="user">
+                    <div v-if="!is_mytype" class="user">
                         <label class="label" for="">问诊人关系</label>
                         <!-- <input type="text" v-model='relation' placeholder="请选择"/> -->
                         <span v-show="!relation" class="RightJT" @click='getRelative'>请选择 <i class="iconfont icon-youjiantou1"></i></span>
@@ -12,6 +12,10 @@
                         <!-- <select v-model='relation' >
                             <option v-for='(val,i) in relationss' :value="val" :key='i'>{{ val }}</option>
                         </select> -->
+                    </div>
+                    <div v-if="is_mytype" class="user">
+                        <label class="label" for="">问诊人关系</label>
+                        <span class="RightJT" >本人 <i class="iconfont icon-youjiantou1"></i></span>
                     </div>
                     <div class="user">
                         <label for="">姓名</label>
@@ -24,7 +28,7 @@
                 </div>
             </div>
             <div class="footer" v-show='hidshow'>
-                <mt-button @click.native="preserveClick">保存</mt-button>
+                <mt-button :disabled="disabled" @click.native="preserveClick">保存</mt-button>
             </div>
         </div>
         <mt-popup style="width: 100%;"
@@ -56,11 +60,18 @@ export default {
             hidshow: true,  //显示或者隐藏footer
             isGetrelative: false,
             uid: this.$cookie.get('userLogins'),
-            relationId: ''
+            relationId: '',
+            is_mytype: false,
+            disabled: false,
         }
     },
     mounted() {
         // window.onresize监听页面高度的变化
+        if (this.$route.query.type) {
+            this.is_mytype = true
+        } else {
+            this.is_mytype = false
+        }
         var self = this;
         window.onresize = function() {
             return( function (){
@@ -81,7 +92,7 @@ export default {
         preserveClick: function () {
             var iscardReg = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;   // 正则身份证
             var self = this;
-            if (this.relation == '') {
+            if (!this.is_mytype && this.relation == '') {
                 this.$toast({
                     message: '请选择问诊人关系',
                     position: 'middle',
@@ -105,8 +116,37 @@ export default {
                 })
                 return;
             }
+            if (self.is_mytype) {
+                this.disabled = true;
+                var objs = { uid: this.uid, name: this.userName, idcard: this.IDcard }
+                this.$http.post('/mobile/Wxpatient/add_patient_user', objs).then(res => {
+                    console.log(res)
+                    if (res.code == 1) {
+                        self.$toast({
+                            message: '添加成功！',
+                            position: 'middle',
+                            duration: 2000
+                        });
+                        var time = setTimeout(function () {
+                            self.$router.go(-1)
+                            clearTimeout(time);
+                            self.disabled = false;
+                        }, 500)
+                        
+                    } else {
+                        self.disabled = false;
+                        self.$toast({
+                            message: res.msg,
+                            position: 'middle',
+                            duration: 2000
+                        });
+                    }
+                })
+                return;
+            }
             var obj = {uid: this.uid, type: this.relationId, name: this.userName, idcard: this.IDcard}
             console.log(obj)
+            this.disabled = true;
             this.$http.post('/mobile/Wxpatient/add_patient', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
@@ -117,10 +157,12 @@ export default {
                     });
                     var time = setTimeout(function () {
                         self.$router.go(-1)
-                        clearTimeout(time)
+                        clearTimeout(time);
+                        self.disabled = false;
                     }, 1000)
                     
                 } else {
+                    self.disabled = false;
                     self.$toast({
                         message: res.msg,
                         position: 'middle',

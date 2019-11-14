@@ -26,7 +26,7 @@
             </ul>
         </div>
         <div class="footer">
-            <mt-button @click.native="handleClickImage">查看电子影像</mt-button>
+            <mt-button @click.native="handleClickImage">查看数字影像</mt-button>
         </div>
     </div>
 </template>

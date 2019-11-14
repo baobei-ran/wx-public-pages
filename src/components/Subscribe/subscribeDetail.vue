@@ -110,6 +110,14 @@ export default {
     },
     methods: {
         handleClickRate () {  // 去评价
+            if (!this.yudetail.did) {
+                this.$toast({
+                    message: '医生不存在，无法评价',
+                    position: 'middle',
+                    duration: 2000
+                });
+                return;
+            }
             this.$router.push('/userEvaluateRate?id='+this.yudetail.registration_number+'&did='+this.yudetail.did+'&type=2')
         },
         initdata () {

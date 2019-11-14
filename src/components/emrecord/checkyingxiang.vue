@@ -16,7 +16,7 @@
                     </div>
                 <!-- 内容 -->
                 <div class="content-wrap" v-show="isViewUser">
-                    <div class="head-msg">查询到以下就诊人的电子影像</div>
+                    <div class="head-msg">查询到以下就诊人的数字影像</div>
                     <div class="content-wrap-user" v-for="(val,i) in imageList" :key='i'>
                         <div class="user-info bg-f">
                             <h1>
@@ -39,7 +39,7 @@
                                 </li>
                                 <li>
                                     <span>检查时间</span>
-                                    <span class="Color-black">{{ val.exam_datetime }}</span>
+                                    <span class="Color-black">{{ val.exam_datetime | moment }}</span>
                                     <div v-show='val.image_type == 2'>
                                         <mt-button class="bg-f" @click.native="handleClickBuy(val)">支付查看</mt-button>
                                     </div>
@@ -150,7 +150,11 @@ export default {
         },
         handleClickLookOver(url) { // 立即查看
             console.log(url)
-            window.location.href = url
+            // window.location.href = url
+            this.$cookie.set('_USER_IMAGE', JSON.stringify(url))
+            setTimeout(() => {
+                this.$router.push('/userCheckDetails?time='+ new Date().getTime())   // 成功后跳转到影像页 
+            }, 10)
         },
         handleSpecialistCheck(val) {   // 专家阅片
             console.log(val)

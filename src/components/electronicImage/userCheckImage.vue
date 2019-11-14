@@ -8,13 +8,13 @@
 export default {
     data () {
         return {
-            paths: ''
+            paths: '',
         }
     },
     mounted () {
-        this.paths = this.$cookie.get('_USERIMAGE');
+        this.paths = JSON.parse(this.$cookie.get('_USER_IMAGE')) || 'http://wechat.client.pacsonline.cn/index_yyk.html#/reportInfo/report?license=c57f12f695585bacb79de89030beedf8&exam_id=116d6d59c62aff87&study_id=116d6d59c611fcca';
         console.log(this.paths)
-    }
+    },
 }
 </script>
 <style lang="scss" scoped>

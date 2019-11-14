@@ -1,8 +1,9 @@
 import axios from 'axios';
 // var baseURL = document.location.origin;  // 获取 url 的域名
 // var baseURL = window.location.protocol+"//"+window.location.host; // 获取 url 的域名兼容ie
+// var baseURL = 'http://test99.yunyikang.cn'; // 测试
 
-// console.log(process.env.NODE_ENV)
+console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   var baseURL = window.location.protocol+"//"+window.location.host; 
 } else {
@@ -154,6 +155,41 @@ function $upload(Url, data) {  // formdata
   })
 }
 
+function $POST(url, data) {  // 支付使用
+  var httpPost = axios.create({
+    baseURL: baseURL,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+    },
+    transformRequest: [function (data) {
+      if (typeof data === 'object') {
+        var newData = '';
+        for (var k in data) {
+          if (data.hasOwnProperty(k) === true) {
+            newData += encodeURIComponent(k) + "=" + encodeURIComponent(data[k]) + "&";
+          }
+        }
+        newData = newData.substr(0, newData.length - 1)
+        return newData;
+      }
+       return data
+    }]
+  });
+  httpPost.interceptors.request.use(function (config) {
+    return config;
+  }, function (error) {
+    // 对请求错误做些什么
+    return Promise.reject(error);
+  });
+  return new Promise((response, reject) => {
+    httpPost.post(url, data).then(res => {
+      response(res.data);
+    }).catch(error => {
+      reject(error)
+    });
+  })
+}
+
 export default {
   get: function (url, params) {
     return apiAxios('GET', url, params)
@@ -190,5 +226,8 @@ export default {
         return Promise.reject(e);
       })
     })
+  },
+  pays: function (url, params) {
+    return $POST(url, params)
   }
 }

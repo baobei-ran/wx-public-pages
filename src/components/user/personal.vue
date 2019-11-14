@@ -142,7 +142,8 @@
             </div>
             <ul class="ul">
                 <li @click='goSite'><img src="../../common/img/icon_shdz.png" alt=""> <span>收货地址管理</span> <img class="Right" src="../../common/img/icon_enter.png" alt="" /></li>
-                <li @click='handleTest'><img src="../../common/img/icon_shdz.png" alt=""> <span>test page</span> <img class="Right" src="../../common/img/icon_enter.png" alt="" /></li>
+                <li @click='handleTest(1)'><img src="../../common/img/icon_shdz.png" alt=""> <span>影像支付</span> <img class="Right" src="../../common/img/icon_enter.png" alt="" /></li>
+                <li @click='handleTest(2)'><img src="../../common/img/icon_shdz.png" alt=""> <span>test page</span> <img class="Right" src="../../common/img/icon_enter.png" alt="" /></li>
             </ul> 
         </div>
     </div>
@@ -184,8 +185,12 @@ export default {
         this.initSwiper();
     },
     methods: {
-        handleTest () {
-            this.$router.push('/page1?uid='+this.$route.query.uid)
+        handleTest (n) {
+            if(n == 2) {
+               this.$router.push('/page1?uid='+this.$route.query.uid)
+            } else {
+               this.$router.push('/page2?uid='+this.$route.query.uid)
+            }
             // window.location.href= 'uservip.html#/test?uid='+this.$route.query.uid;
         },
         testClick () {
@@ -277,6 +282,10 @@ export default {
             this.out('/subscribe')
         },
         getAdministration () { // 成员管理
+            var is_no = this.$cookie.get('_NO_NO');
+            if (is_no) {
+                this.$cookie.delete('_NO_NO')
+            }
             this.out('administration')
         },
         goSite() {  // 地址

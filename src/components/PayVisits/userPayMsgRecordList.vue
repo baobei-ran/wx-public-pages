@@ -212,6 +212,7 @@ export default {
    &-content {
        width: 100%;
        overflow-y: scroll;
+       -webkit-overflow-scrolling: touch;
        &-box {
            width: 100%;
            padding: 0 rem(30);

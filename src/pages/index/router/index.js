@@ -102,6 +102,8 @@ const Docrecord = () => import('@/components/webIM/webHistoryMsg.vue' /* webpack
 
 const UserPayHistoryInfo = () => import('@/components/PayVisits/userPayHistoryInfo.vue' /* webpackChunkName: "amr" */);  // 付费问诊历史记录
 const BuyImage = () => import('@/components/electronicImage/buyImage.vue');          // 影像支付页
+
+const UserEvaluateRate = () => import('@/components/PayVisits/userEvaluateRate.vue');   // 评价页面
 Vue.use(Router);
 
 const router = new Router({
@@ -435,7 +437,7 @@ const router = new Router({
       component: GetAdministration
     },
     {
-      path: '/administration/addmember',
+      path: '/administration/addmember:id?',
       meta: { title: '添加新成员' },
       name: 'addmember',
       component: Addmember
@@ -534,16 +536,21 @@ const router = new Router({
       name: 'userPayMsgRecordDetail',
       component: UserPayMsgRecordDetail
     },
-    
+    {
+      path: '/userEvaluateRate:id?',        
+      meta: {title: '问诊评价'},
+      name: 'userEvaluateRate',
+      component: UserEvaluateRate
+    },
     {
       path: '/searchImage:uid?',      // 影像  
-      meta: { title: '查询结果' },
+      meta: { title: '数字影像' },
       name: 'searchImage',
       component: SearchImage
     },
     {
       path: '/checkImages:uid?',      // 不展示的影像 （副业） 
-      meta: { title: '查看结果' },
+      meta: { title: '数字影像' },
       name: 'checkImages',
       component: CheckImages
     },
@@ -567,15 +574,21 @@ const router = new Router({
     },
     {
       path: '/buyImage:id?',
-      meta: { title: '电子影像' },
+      meta: { title: '数字影像' },
       name: 'buyImage',
       component: BuyImage
     },
     {
       path: '/userCheckDetails', // 支付购买的影像查看示例
-      meta: { title: '电子影像' },
+      meta: { title: '数字影像' },
       name: 'userCheckDetails',
       component: () => import('@/components/electronicImage/userCheckImage.vue')
+    },
+    {
+      path: '/pacsPayIamges:id?', // 支付购买的影像查看示例
+      meta: {title: '支付数字影像'},
+      name: 'pacsPayIamges',
+      component: () => import('@/components/payImage/pacsPayImages.vue')
     },
     {
       path: '/page1:id?', // test 一下
@@ -583,6 +596,12 @@ const router = new Router({
         window.location.href = 'uservip.html#/test?uid='+to.query.uid
       }
       
+    },
+    {
+      path: '/page2:id?', // test 一下
+      beforeEnter(to, from, next) {
+        window.location.href = 'pacsimage.html#/payimage?uid='+to.query.uid
+      }
     }
     
   ],

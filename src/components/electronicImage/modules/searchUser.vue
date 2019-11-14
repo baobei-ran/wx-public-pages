@@ -9,6 +9,7 @@
                     <!-- <div class="inpt">{{ userCard.real_name }}</div> -->
                     <i class="icon-x"></i>
                     <select class="inpt" v-model="userCard" id='select-list'>
+                        <option value="">请选择</option>
                         <option v-for="(val,i) in userInfo" :value="val"  :key='i'>{{val.real_name}}</option>
                     </select>
                 </li>
@@ -23,7 +24,7 @@
             </ul>
         </div>
         <div class="footer">
-            <mt-button @click.native="handleClickImage">查看电子影像</mt-button>
+            <mt-button @click.native="handleClickImage">查看数字影像</mt-button>
         </div>
         
     </div>
@@ -33,7 +34,7 @@ export default {
     props: ['real_name'],
     data () {
         return {
-            userCard: {},
+            userCard: '',
             userNumber: '',
             userInfo: [],
             uid: this.$cookie.get('userLogins'),
@@ -56,7 +57,7 @@ export default {
         initdata () {
             var self = this;
             self.$http.post('/mobile/Wxpatient/index', { uid: this.uid }).then(res => {
-                // console.log(res)
+                console.log(res)
                 if (res.code == 1) {
                     self.userInfo = res.data
                     if (res.data.length > 0) {
@@ -72,7 +73,14 @@ export default {
             })
         },
         handleClickImage () {
-            
+            if (!this.userCard.id_card) {
+                this.$toast({
+                    message: '请选择就诊人',
+                    position: 'middle',
+                    duration: 2000
+                });
+                return;
+            }
             if (!this.userNumber) {
                 this.$toast({
                     message: '请输入医院就诊卡号/病历号/检查号/门诊号等',

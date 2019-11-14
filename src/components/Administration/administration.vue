@@ -35,16 +35,41 @@ export default {
     methods: {
         initdata () {
             var self = this;
-            self.dataList = []
+            self.dataList = [];
+            var is_no = self.$cookie.get('_NO_NO')
             self.$http.post('/mobile/Wxpatient/index', { uid: this.uid}).then(res => {
                 console.log(res)
                 if (res.code == 1) {
-                    self.dataList = res.data
+                    self.flag = false;
+                    self.dataList = res.data;
+                    if (!is_no) {
+                        var is_tag = false;
+                        self.dataList.map(val => {
+                            if (val.type == 1) {
+                                is_tag = true;
+                            }
+                        })
+                        if (!is_tag) {
+                            self.addUserInfo()
+                        }
+                    }
+                    
                 } else {
                     self.dataList = []
-                    self.flag = true
+                    self.flag = true;
+                    if (!is_no) {
+                        self.addUserInfo()
+                    }
                 }
             })
+        },
+        addUserInfo () {
+            var self = this;
+            this.$messagebox.confirm('<p style="color: #333;">请完善本人信息</p>', {confirmButtonText: '确定'}).then(action => {
+                self.$router.push('/administration/addmember?type=1')
+            }).catch(err => {
+                self.$cookie.set('_NO_NO', 'eee333')
+            });
         },
         addClick: function () {
             this.out('/administration/addmember')

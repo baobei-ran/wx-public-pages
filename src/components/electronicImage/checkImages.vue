@@ -14,7 +14,7 @@
                 </div>
                 <!-- 内容 -->
                 <div class="content-wrap" v-show="isViewUser">
-                    <div class="head-msg">查询到以下就诊人的电子影像  <span class="filters" @click='is_filtrate = !is_filtrate'>{{ filtrateName?filtrateName:'筛选'}}</span>
+                    <div class="head-msg">查询到以下就诊人的数字影像  <span class="filters" @click='is_filtrate = !is_filtrate'>{{ filtrateName?filtrateName:'筛选'}}</span>
                         <ul class="user-selects" v-show="is_filtrate">
                             <li class="user-option" v-for="(ur, index) in userList" :key='index+"_user"'  @click='handleFilterUser(ur)'>{{ ur.name }}</li>
                         </ul>
@@ -118,7 +118,7 @@
             </div>
         </div>
         <div class="electronicImage-footer">
-            <mt-button @click.native="handleClickImage">查看其他就诊人的电子影像</mt-button>
+            <mt-button @click.native="handleClickImage">查看其他就诊人的数字影像</mt-button>
         </div>
         <mt-popup v-model="popupVisible" style="width: 100%;overflow-y: scroll;" position="bottom" @touchmove.prevent>
             <PopupMsg @shadehide='shadehide' @handleUserImage='handleUserImage'/>
@@ -309,7 +309,7 @@ export default {
                         self.isView = true;
                     }
                 } else if (res.code == 3) {
-                    self.giveList = res.data;
+                    self.giveList = res.example;
                     self.isViewUser = false;
                     self.isView = true;
                 } else {
@@ -398,76 +398,60 @@ export default {
         },
         handleClickBuy (v) { // 支付查看
             console.log(v)
-            this.$cookie.set('BuyImage', JSON.stringify(v), 1);
-            this.$router.push('/buyImage?uid='+this.uid);
-            // var self = this;
-            // this.$http.post('/mobile/WxSeeImage/see_one_image', { userid: this.uid, hospital_name: v.hospital , exam_id: v.exam_id  }).then(res => {
-            //     console.log(res)
-            //     if (res.code == 0) {
-            //         var sex = v.patient_sex == 'F'? '女':'男';
-            //         var msg ='<ul style="color:#333;padding-left:0.4rem;"><li><span style="display: inline-block;width: 30%;">检查医院：</span><span style="display: inline-block;width: 70%;">'+v.hospital+'</span></li> <li><span style="display: inline-block;width: 30%;">就诊人：</span><span style="display: inline-block;width: 70%;">'+v.patient_name+'<b> | </b>'+sex+'<b> | </b>'+v.age+'岁</span></li> <li><span style="display: inline-block;width: 30%;">服务项目：</span><span style="display: inline-block;width: 70%;">查看电子影像</span></li> <li><span style="display: inline-block;width: 30%;">服务费用：</span><span style="display: inline-block;width: 70%;">'+res.price+'元</span></li></ul>'
-            //         self.$dialog.confirm({
-            //             title: '',
-            //             message: msg,
-            //             messageAlign: 'left',
-            //             className: 'vant-user-msg',
-            //             confirmButtonText: '确定支付',
-            //         }).then(() => {
-            //             if (!self.$isMoble) {
-            //                 self.$toast({
-            //                     message: '请在手机微信端下单支付',
-            //                     position: 'middle',
-            //                     duration: 3000
-            //                 });
-            //                 return;
-            //             }
-            //             self.wxbuy(v)
-            //         }).catch(() => {
-            //             console.log('no')
-            //         });
-            //     } else if (res.code == 1) {
-            //         window.location.href = res.yx_url
-            //     } else {
-            //         self.$toast({
-            //             message: res.msg,
-            //             position: 'middle',
-            //             duration: 2000
-            //         });
-            //     }
-            // })
+            // this.$cookie.set('BuyImage', JSON.stringify(v), 1);
+            // this.$router.push('/buyImage?uid='+this.uid);
+            var self = this;
+            this.$http.post('/mobile/WxSeeImage/see_one_image', { userid: this.uid, hos_id: v.hid, exam_id: v.exam_id, study_id: v.study_id  }).then(res => {
+                console.log(res)
+                if (res.code == 0) {
+                    var sex = v.patient_sex == 'F'? '女':'男';
+                    var msg ='<ul style="color:#333;padding-left:0.4rem;"><li><span style="display: inline-block;width: 30%;">检查医院：</span><span style="display: inline-block;width: 70%;">'+v.hospital+'</span></li> <li><span style="display: inline-block;width: 30%;">就诊人：</span><span style="display: inline-block;width: 70%;">'+v.patient_name+'<b> | </b>'+sex+'<b> | </b>'+v.age+'岁</span></li> <li><span style="display: inline-block;width: 30%;">服务项目：</span><span style="display: inline-block;width: 70%;">查看电子影像</span></li> <li><span style="display: inline-block;width: 30%;">服务费用：</span><span style="display: inline-block;width: 70%;">'+res.price+'元</span></li></ul>'
+                    self.$dialog.confirm({
+                        title: '',
+                        message: msg,
+                        messageAlign: 'left',
+                        className: 'vant-user-msg',
+                        confirmButtonText: '确定支付',
+                    }).then(() => {
+                        self.wxbuy(v)
+                    }).catch(() => {
+                        console.log('no')
+                    });
+                } else if (res.code == 1) {
+                    window.location.href = res.yx_url
+                } else {
+                    self.$toast({
+                        message: res.msg,
+                        position: 'middle',
+                        duration: 2000
+                    });
+                }
+            })
             
         },
-        // wxbuy (v) { // 支付查看发起支付
-        //     var self = this;
-        //     if (!self.$isMoble) {
-        //         self.$toast({
-        //             message: '请在手机微信端下单支付',
-        //             position: 'middle',
-        //             duration: 3000
-        //         });
-        //         return;
-        //     }
-        //     self.$http.post('/mobile/WxSeeImage/user_image_pay', { userid: this.uid, exam_id: v.exam_id , idcard: v.idcard }).then(response => {
-        //         console.log(response)
-        //         if (response.code == 1) {
-        //             self.wxsjk(response.data)
-        //             self.order_code = response.data.order_code; // 获取订单号
-        //             self.yx_url = response.data.yx_url;         // 获取支付成功后的跳转链接
-        //         } else {
-        //             self.$toast({
-        //                 message: response.msg,
-        //                 position: 'middle',
-        //                 duration: 2000
-        //             });
-        //         }
-        //     }).catch(err => {
-        //         self.$toast({
-        //             message: '服务器发生错误，无法支付',
-        //             position: 'middle',
-        //             duration: 2000
-        //         });
-        //     })
-        // },
+        wxbuy (v) { // 支付查看发起支付
+            var self = this;
+            self.$http.pays('/mobile/WxSeeImage/wx_pay_merchant', { userid: this.uid, exam_id: v.exam_id , idcard: v.idcard, study_id: v.study_id, hos_id: v.hid }).then(response => {
+                console.log(response)
+                if (response.code == 200) {
+                    self.wxsjk(response.data)
+                    self.order_code = response.data.order_code; // 获取订单号
+                    self.yx_url = response.data.yx_url;         // 获取支付成功后的跳转链接
+                } else {
+                    self.$toast({
+                        message: response.msg,
+                        position: 'middle',
+                        duration: 2000
+                    });
+                }
+            }).catch(err => {
+                self.$toast({
+                    message: '服务器发生错误，无法支付',
+                    position: 'middle',
+                    duration: 2000
+                });
+            })
+        },
         wxsjk (data) {  // 调起微信支付
             var self = this;
             if (typeof WeixinJSBridge == "undefined") {
@@ -497,11 +481,16 @@ export default {
                     if(res.err_msg == "get_brand_wcpay_request:ok"){
                     // 使用以上方式判断前端返回,微信团队郑重提示：
                             // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-                            
-                            var t = setTimeout(function () {
-                                self.isSuccess()
-                               clearTimeout(t)
-                            }, 1000)
+                            self.$toast({
+                                message: '支付成功！',
+                                position: 'middle',
+                                iconClass: 'iconfont icon-tipssuccess',
+                                duration: 1000
+                            });
+                            // var t = setTimeout(function () {
+                            //     self.isSuccess()
+                            //    clearTimeout(t)
+                            // }, 1000)
                             
                     } else {
                         self.isClassify = false;
@@ -533,7 +522,18 @@ export default {
                     if(self.status && self.isClassify) {
                         self.$router.push({path: '/chatroom', query: {did: self.did , uid: self.uid }})  // 支付成功进入聊天页
                     } else {
-                        window.location.href = self.yx_url // 影像页
+                        // window.location.href = self.yx_url // 影像页
+                        if (self.yx_url) {
+                            self.$cookie.set('_USERIMAGE', self.yx_url)
+                            self.$router.push('/userCheckDetails')
+                        } else {
+                            self.$toast({
+                                message: '未获取到影像路径',
+                                position: 'middle',
+                                duration: 3000
+                            });
+                        }
+                        
                     }
                 } else {
                     self.isClassify = false;
