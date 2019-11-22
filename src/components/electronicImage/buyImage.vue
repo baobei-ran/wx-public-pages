@@ -53,7 +53,7 @@ export default {
     mounted () {
         var self = this;
         var userMsg = JSON.parse(self.$cookie.get('BuyImage'));
-        // console.log(userMsg)
+        console.log(userMsg)
         this.userMsg = userMsg;
         this.$http.post('/mobile/WxSeeImage/see_one_image', { userid: this.uid, hos_id: userMsg.hid, exam_id: userMsg.exam_id, study_id: userMsg.study_id }).then(res => {
                 console.log(res)
@@ -77,7 +77,23 @@ export default {
             this.$router.back()
         },
         handleClickBuy () {
-            this.wxbuy(this.userMsg)
+            var self = this;
+            self.$http.post('/mobile/WxSeeImage/flag_pay', {hid: this.userMsg.hid }).then(res => {
+                console.log(res)
+                if (res.code == 301 || res.code == 302) {
+                    self.wxbuy(self.userMsg)
+                } else if (res.code == 303) {
+                    window.location.href='https://www.yunyikang.cn/mobile/WxSeeImage/user_image_merchant_pay?userid='+self.uid+'&hos_id='+self.userMsg.hid+'&idcard='+self.userMsg.idcard+'&exam_id='+self.userMsg.exam_id+'&study_id='+self.userMsg.study_id+'time='+new Date().getTime()
+                } else {
+                    self.$toast({
+                        message: res.msg,
+                        position: 'middle',
+                        duration: 3000
+                    });
+                }
+            }).catch(err => {
+                console.log(err)
+            })
         },
         wxbuy (v) {
             var self = this;
@@ -92,7 +108,6 @@ export default {
             self.$http.axios('/mobile/WxSeeImage/user_image_pay', { userid: this.uid, exam_id: v.exam_id , idcard: v.idcard, hos_name: v.hospital, hos_info: JSON.stringify(v), exam_datetime: v.exam_datetime, exam_class: v.exam_class, patient_num: v.patient_num, study_id: v.study_id, hos_id: v.hid }).then(response => {
                 console.log(response)
                 if (response.code == 1) {
-                    
                     self.order_code = response.data.order_code; // 获取订单号
                     self.yx_url = response.data.yx_url;         // 获取支付成功后的跳转影像链接
                     self.wxsjk(response.data)
@@ -104,6 +119,11 @@ export default {
                     });
                 }
             }).catch(err => {
+                self.$toast({
+                    message: '服务器错误，无法支付',
+                    position: 'middle',
+                    duration: 2000
+                });
                 console.log(err)
             })
         },

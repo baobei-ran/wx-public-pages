@@ -90,6 +90,7 @@ export default {
                 return;
             }
             var obj = {
+                id: this.userCard.id,
                 userCard: this.userCard.id_card,
                 userNumber: this.userNumber,
                 isShow: false

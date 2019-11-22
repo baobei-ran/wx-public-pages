@@ -591,6 +591,18 @@ const router = new Router({
       component: () => import('@/components/payImage/pacsPayImages.vue')
     },
     {
+      path: '/merchantPayImage:id?',         // pacs 用户购买的影像支付页
+      meta: { title: '支付数字影像' },
+      name: 'merchantPayImage',
+      component: () => import('@/components/pacs/payimage.vue')
+    },
+    {
+        path: '/paysuccess/:url',          // pacs 用户支付购买影像成功页  params 传参得
+        meta: { title: '支付云影像' },
+        name: 'paysuccess',
+        component: () => import('@/components/pacs/paysuccess.vue')
+    },
+    {
       path: '/page1:id?', // test 一下
       beforeEnter(to, from, next) {
         window.location.href = 'uservip.html#/test?uid='+to.query.uid

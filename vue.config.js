@@ -37,8 +37,8 @@ module.exports = {
   configureWebpack: config => { // webpack配置，值位对象时会合并配置，为方法时会改写配置
     if (process.env.NODE_ENV === 'production') {
       config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
-      // config.plugins.push(
-      //   new CompressionWebpackPlugin({
+      config.plugins.push(
+        new CompressionWebpackPlugin({
           // filename: info => {    // 只压缩 js
           //   return `${info.path}.gz${info.query}`
           // },
@@ -49,15 +49,15 @@ module.exports = {
           //   ['js'].join('|') +
           //   ')$'
           // ),
-          // minRatio: 0.8,
+          minRatio: 0.8,
             // 正在匹配需要压缩的文件后缀 所有指定的都压缩 
-            // test: /\.(js|css|svg|woff|ttf|json|html)$/,
+            test: /\.(js|css|svg|woff|ttf|json|html)$/,
             // 大于10kb的会压缩
-            // threshold: 10240,
-            // deleteOriginalAssets: false // 删除原文件
+            threshold: 10240,
+            deleteOriginalAssets: false // 删除原文件
             // 其余配置查看compression-webpack-plugin
-        //   })
-        // )
+          })
+        )
     }
      optimization: {
       minimizer: [
@@ -138,7 +138,7 @@ module.exports = {
   pwa:{},
   devServer: {
     index: "index.html", // 默认启动serve 打开index页面
-    open: false,
+    open: true,
     // host: "192.168.1.8",
     // host: "192.168.1.151",
     // host: "localhost",

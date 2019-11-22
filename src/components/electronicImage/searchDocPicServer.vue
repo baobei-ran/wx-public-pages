@@ -21,7 +21,7 @@
                         <ul @click='Clickdetail(val.did, i)'>
                             <li>
                                 <span>
-                                    <img v-lazy="$http.baseURL+val.picture" alt="" />
+                                    <img v-lazy="val.picture?$http.baseURL+val.picture:''" alt="" />
                                 </span>
                                 <dl>
                                     <dt>

@@ -244,7 +244,7 @@ export default {
             console.log(val)
             this.popupVisible2 = val.isShow
             var self = this;
-            self.$http.post('/mobile/WxSeeImage/get_examine_number', { id_card: val.userCard, exam_id: val.userNumber }).then(res => {
+            self.$http.post('/mobile/WxSeeImage/get_examine_number', { pid: val.id, id_card: val.userCard, exam_id: val.userNumber }).then(res => {
                 console.log(res)
                 if (res.code == 200) {
                     self.$toast({

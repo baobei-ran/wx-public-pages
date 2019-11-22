@@ -159,7 +159,16 @@ export default {
             real_name: '',
         }
     },
+    destroyed () {
+        this.$cookie.delete('reload')
+    },
     created () {
+        var ints = this.$cookie.get('reload')
+        if (!ints) {
+            this.$cookie.set('reload', 110)
+            window.location.reload()
+        }
+       
         var docid = this.$route.query.did;
         if (docid) {
             this.did = docid
@@ -244,7 +253,28 @@ export default {
             console.log(val)
             this.popupVisible2 = val.isShow
             var self = this;
-            self.$http.post('/mobile/WxSeeImage/get_examine_number', { id_card: val.userCard, exam_id: val.userNumber }).then(res => {
+            self.$http.post('/mobile/WxSeeImage/is_himself_image', { pid: val.id, exam_id: val.userNumber }).then(res => {
+                console.log(res)
+                if (res.code == 200) {
+                    self.handleBindImage(val)
+                } else if (res.code == 301) {
+                    self.$messagebox.confirm("<p style='color:#333;'>查询到"+res.data+"影像，"+res.msg+"</p>").then(action => {
+                        self.handleBindImage(val)
+                    }).catch(cancel => {
+                        console.log('取消')
+                    });
+                } else {
+                    self.$toast({
+                        message: res.msg,
+                        position: 'middle',
+                        duration: 3000
+                    });
+                }
+            })
+        },
+        handleBindImage (val) {
+            var self = this;
+            self.$http.post('/mobile/WxSeeImage/get_examine_number', { pid: val.id, id_card: val.userCard, exam_id: val.userNumber }).then(res => {
                 console.log(res)
                 if (res.code == 200) {
                     self.$toast({
@@ -253,6 +283,8 @@ export default {
                         duration: 2000
                     });
                     self.initdata()
+                } else if (res.code == 301) {
+                    
                 } else {
                     self.$toast({
                         message: res.msg,
@@ -263,7 +295,6 @@ export default {
             }).catch(err => {
                 console.log(err)
             })
-
         },
         handleCheckImage (url) { // 查看影像
             var time = new Date().getTime()
