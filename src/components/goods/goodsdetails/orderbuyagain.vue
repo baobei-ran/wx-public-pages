@@ -49,7 +49,7 @@
             </div>
         </main>
         <div class="footer" v-show="hidShow">
-            <div>总计：<span>￥{{ orderdata.money }}</span></div>
+            <div class="z_money"><span>总计：</span><span>￥{{ orderdata.money }}</span></div>
             <mt-button type="primary" @click.native='orderData'>提交订单</mt-button>
         </div>
     </div>
@@ -441,7 +441,7 @@ export default {
         -webkit-display: flex;
         display: flex;
         height: rem(49);
-        >div {
+        .z_money {
             width: 50%;
             text-align: right;
             padding-right: rem(15);

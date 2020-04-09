@@ -22,7 +22,9 @@
                           <!-- txt -->
                           <li v-if="val.type == 'txt'">
                               <span v-if='val.data'>{{ val.data }}</span>
-                              <span v-if='val.content' v-for="(t, i) in val.content" :key='i+"_emjj"' v-html='t'></span>
+                              <template v-if='val.content'>
+                                <span v-for="(t, i) in val.content" :key='i+"_emjj"' v-html='t'></span>
+                              </template>
                               <div class="docFang" v-if='val.stype == 1' @click='chuFang(val.ext)'>
                                   <img src="../../common/img/img_lt_cfy.png" alt=""/>
                                   <span>电子处方</span>
@@ -657,7 +659,7 @@ export default {
                     var serverId = res.serverId; // 返回音频的服务器端ID
                     var audios = {to: self.docId, type:'audio', wxid: localId, serverId: serverId};  // 存进数组中
                     
-                    self.$http.post('/mobile/wxchat/index', { uid: self.uid, did: self.did, type: 3, con: serverId, number: _self.userNumber  }).then(res => {
+                    self.$http.post('/mobile/wxchat/index', { uid: self.uid, did: self.did, type: 3, con: serverId, number: self.userNumber  }).then(res => {
                         if (res.code == 1) {
                             self.onTextMsg(audios)  // 存进本地
                             self.$toast({
@@ -1655,13 +1657,11 @@ export default {
       if (this.daoBox) {
         clearInterval(this.daoBox); 
       }
-      
+      console.log(this.$imConn)
+      this.$imConn.close('logout');
+      this.$imConn.errorType = WebIM.statusCode.WEBIM_CONNCTION_CLIENT_LOGOUT;
+      this.$indicator.close();
   },
-  destroyed () {
-    this.$imConn.close();
-    this.$indicator.close();
-  },
-  
   filters: {
       chatTime (time) {
         if (!time) {

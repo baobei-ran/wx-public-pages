@@ -64,7 +64,7 @@
             </div>
         </main>
         <div class="footer" v-show="hidShow">
-            <div>总计：<span>￥{{ orderdata.moneys }}</span></div>
+            <div><span>总计：</span><span>￥{{ orderdata.moneys }}</span></div>
             <mt-button type="primary" @click.native='orderData'>提交订单</mt-button>
         </div>
     </div>
@@ -508,12 +508,15 @@ export default {
         >div {
             width: 50%;
             text-align: right;
+            display: flex;
+            align-items: center;
             padding-right: rem(15);
-            line-height: rem(49);
             color: #333;
             font-weight:400;
             span {
                 color: #F09F88;
+                display: inline-block;
+                min-width: rem(50);
             }
         }
         >button {

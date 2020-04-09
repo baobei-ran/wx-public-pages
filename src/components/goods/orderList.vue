@@ -3,146 +3,19 @@
     <div class="ordergoods">
         <div class="navtab">
             <ul class="dis_f dis_sb flex-vc">
-                <li @click='tabs(1)' :class="{'action': tabId == 1}" >全部</li>
-                <li @click='tabs(2)' :class="{'action': tabId == 2}">待付款</li>
-                <li @click='tabs(3)' :class="{'action': tabId == 3}">待收货</li>
-                <li @click='tabs(4)' :class="{'action': tabId == 4}">已完成</li>
-                <li @click='tabs(5)' :class="{'action': tabId == 5}">已取消</li>
+                <li v-for='item in tabList' :key='item.id'  @click='tabs(item.id, item.v_id)' :class="{'action': tabId == item.id}" >{{ item.value }}</li>
             </ul>
         </div>
         <div class="content">
             <div class="content_box">
-                
-
-    <div class="orderall">
-        <div class="empty" v-if='!alllist.length'>
-            <empty></empty>
-        </div>
-        <div class="content_box">
-            <div class="Pd-B10">
-        <div class="content" v-if='alllist.length'>   
-            <!-- 待付款 -->
-            <div class="add Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 1'>
-                <h4>
-                    <span v-show="val.tpye == 1">{{ val.type_name }}医生的店铺</span> 
-                    <span v-show="val.tpye == 2">{{ val.type_name }}</span>
-                    <span>等待付款</span>
-                </h4>
-                <div class="order_list" @click='paydetail(val)'>
-                    <dl>
-                        <dt class="dis_f flex_i">
-                            <img v-for="(item, j) in val.img" :key='j+"_1"' :src="$http.baseURL+item" alt="">
-                            <span v-show="val.picnum > 4" class="omit"></span>
-                        </dt>
-                        <dd>
-                            <span>￥{{ val.money }}</span>
-                            <p>共{{ val.allnum }}件商品</p>
-                            <b v-show="val.distribution == 2">门店自提</b>
-                        </dd>
-                    </dl>
+                <div class="orderall">
+                    <div class="empty" v-if='!alllist.length'>
+                        <empty></empty>
+                    </div>
+                    <div class="content_box_box">
+                      <Home :alllist='alllist' />
+                    </div>
                 </div>
-                <div class="addbtn">
-                    <mt-button type="primary" @click.native='paydetail(val)'>去支付</mt-button>
-                </div>
-            </div>
-            
-            <!-- 待发货 -->
-            <!-- <div class="take Mg-T" v-for='(val,i) in alllist' :key='i+"_2"' v-if='val.status == 2 || val.status == 3 || val.status == 4'>
-                <h4>{{ val.sname }}医生的店铺
-                    <span>等待发货</span></h4>
-                <div class="order_list" @click='outdetails(val)'>
-                    <dl>
-                        <dt class="dis_f flex_i">
-                            <img v-for="(item, j) in val.img" :key='j+"_22"' :src="$http.baseURL+item" alt="">
-                        </dt>
-                        <dd>
-                            <span>￥{{ val.money }}</span>
-                            <p>共{{ val.allnum }}件商品</p>
-                            <b v-show="val.distribution == 2">门店自提</b>
-                        </dd>
-                    </dl>
-                </div>
-                <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button></div>
-            </div> -->
-
-            <!-- 待收货 -->
-            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i+"_3"' v-if='val.status == 2 || val.status == 3 || val.status == 4'>
-                <h4>
-                    <span v-show="val.tpye == 1">{{ val.type_name }}医生的店铺</span> 
-                    <span v-show="val.tpye == 2">{{ val.type_name }}</span>
-                    <span v-text="val.tpye == 1?'待收货':'待取货'"></span></h4>
-                <div class="order_list" @click='outdetails(val)'>
-                    <dl>
-                        <dt class="dis_f flex_i">
-                            <img v-for="(item, j) in val.img" :key='j+"_33"' :src="$http.baseURL+item" alt="" />
-                            <span v-show="val.picnum > 4" class="omit"></span>
-                        </dt>
-                        <dd>
-                            <span>￥{{ val.money }}</span>
-                            <p>共{{ val.allnum }}件商品</p>
-                            <b v-show="val.distribution == 2">门店自提</b>
-                        </dd>
-                    </dl>
-                </div>
-                <div class="addbtn" v-show="val.distribution == 1"><mt-button @click.native='buy(val)'>再次购买</mt-button><mt-button class="yes" @click.native='take(val)'>确认收货</mt-button></div>
-            </div>
-
-        <!-- 已完成 -->
-            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i+"_4"' v-if='val.status == 5'>
-                <h4>
-                    <span v-show="val.tpye == 1">{{ val.type_name }}医生的店铺</span> 
-                    <span v-show="val.tpye == 2">{{ val.type_name }}</span>
-                    <span>已完成</span></h4>
-                <div class="order_list" @click='outdetails(val)'>
-                    <dl>
-                        <dt class="dis_f flex_i">
-                            <img v-for="(item, j) in val.img" :key='j+"_44"' :src="$http.baseURL+item" alt="" />
-                            <span v-show="val.picnum > 4" class="omit"></span>
-                        </dt>
-                        <dd>
-                            <span>￥{{ val.money }}</span>
-                            <p>共{{ val.allnum }}件商品</p>
-                            <b v-show="val.distribution == 2">门店自提</b>
-                        </dd>
-                    </dl>
-                </div>
-                <div class="addbtn" v-show="val.distribution == 1">
-                    <!-- <mt-button @click.native='del(val)'>删除订单</mt-button> -->
-                    <mt-button class="yes" @click.native='buy(val)'>再次购买</mt-button></div>
-            </div>
-
-            <!-- 已取消 -->
-            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i+"_5"' v-if='val.status == 6'>
-                <h4>
-                    <span v-show="val.tpye == 1">{{ val.type_name }}医生的店铺</span> 
-                    <span v-show="val.tpye == 2">{{ val.type_name }}</span>
-                    <span>已取消</span>
-                </h4>
-                <div class="order_list" @click='outdetails(val)'>
-                    <dl>
-                        <dt class="dis_f flex_i">
-                            <img v-for="(item, j) in val.img" :key='j+"_55"' :src="$http.baseURL+item" alt="">
-                            <span v-show="val.picnum > 4" class="omit"></span>
-                        </dt>
-                        <dd>
-                            <span>￥{{ val.money }}</span>
-                            <p>共{{ val.allnum }}件商品</p>
-                            <b v-show="val.distribution == 2">门店自提</b>
-                        </dd>
-                    </dl>
-                </div>
-                <div class="addbtn" v-show="val.distribution == 1">
-                    <mt-button class="yes" @click.native='buy(val)'>再次购买</mt-button></div>
-            </div>
-            
-        </div>
-        </div>
-        </div>
-    </div>
-
-
-
-
             </div>
         </div>
         <div class="footer" v-if='!alllist.length'>
@@ -155,41 +28,37 @@
 import { MessageBox } from 'mint-ui';
 import { Toast } from 'mint-ui';
 import empty from './goodslist/empty'
+import Home from './goodComponent/g_home'
 export default {
     components: {
-        empty: empty
+        empty: empty,
+        Home: Home
     },
         data () {
             return {
                 alllist: [],
                 page: 1,
-                limit: 10,
+                limit: 20,
                 type: '',
                 tabId: 1,
+                tabList: [
+                  {id: 1, value: '全部', v_id: '', component: ''},
+                  {id: 2, value: '待付款', v_id: '1', component: ''},
+                  {id: 3, value: '待收货', v_id: '2', component: ''},
+                  {id: 4, value: '已完成', v_id: '3', component: ''},
+                  {id: 5, value: '已取消', v_id: '4', component: ''},
+                ],
+                uid:this.$cookie.get('userLogins'),
             }
         },
         activated () {
             this.initdata (this.page, this.type)
         },
         methods: {
-            tabs (val) {
+            tabs (val, v_id) {
                 this.tabId = val
-                if (val == 1) {
-                    this.type = ''
-                    this.initdata(this.page, this.type)
-                } else if (val == 2) {
-                    this.type = '1'
-                    this.initdata(this.page, this.type)
-                } else if (val == 3) {
-                    this.type = '2'
-                    this.initdata(this.page, this.type)
-                } else if (val == 4) {
-                    this.type = '3'
-                    this.initdata(this.page, this.type)
-                } else if (val == 5) {
-                    this.type = '4'
-                    this.initdata(this.page, this.type)
-                }
+                this.type = v_id
+                this.initdata(this.page, this.type)
             },
             outShop () {    // 去逛逛按钮
                 this.out('/doctorshoplist')
@@ -199,9 +68,8 @@ export default {
             },
             initdata (page, type) {   // 数据
                 var self = this;
-                var uid = this.$cookie.get('userLogins')
                 console.log(type)
-                var obj = { uid: uid, status: type, page: page, num: this.limit }
+                var obj = { uid: self.uid, status: type, page: page, num: this.limit }
                 self.$http.post('/mobile/wxorder/user_goods', obj).then(res => {
                     console.log(res)
                     if (res.code == 1) {
@@ -218,85 +86,10 @@ export default {
                     }
                 })
             },
-            del(val) { // 删除订单
-                var self = this;
-                MessageBox.confirm('删除后不可恢复，是否删除?', '').then(action => {
-                    var obj = { number: val.number, type: 1 }
-                    self.$http.post('/mobile/Wxorder/set_order', obj).then(res => {
-                        console.log(res)
-                        if (res.code == 1) {
-                            Toast({
-                                message: '删除成功!',
-                                position: 'center',
-                                duration: 2000
-                            });
-                            self.initdata(self.page, self.type)
-                        } else {
-                            Toast({
-                                message: res.msg,
-                                position: 'center',
-                                duration: 2000
-                            });
-                        }
-                    })
-                }).catch(err => {
-                    console.log(err)
-                })
-
-            },
-            buy (val) {   // 再次购买
-                console.log(val)
-                this.$router.push({ name: 'orderbuyagain', params: { id:val.number} })   
-            },
-            take(val) {  // 确认收货
-                var self = this;
-                MessageBox.confirm('<p style="color:#333;">确认收货吗?</p>', '').then(action => {
-                    var obj = { number: val.number, type: 3}
-                    self.$http.post('/mobile/Wxorder/set_order', obj).then(res => {
-                        console.log(res)
-                        if (res.code == 1) {
-                            Toast({
-                                message: '操作成功',
-                                position: 'center',
-                                duration: 2000
-                            });
-                            self.initdata (this.page, this.type)
-                        } else {
-                            Toast({
-                                message: res.msg,
-                                position: 'center',
-                                duration: 2000
-                            });
-                        }
-                    })
-                }).catch(err => {
-                    console.log(err)
-                })
-            },
-           
-            paydetail(val) {    // 去支付就可以进入 待付款详情
-                if (val.distribution == 1) {
-                    this.$router.push({ name: 'addorderdetail', params: { id: val.number }})
-                } else {
-                    this.$router.push({ path: '/orderdetails', query: { id: val.number }}) // 药店自提详情
-                }
-                
-            },
-            outdetails (val) {    // 取消和已完成、待收货的查看详情
-                if (val.distribution == 1) {
-                    this.$router.push({ path: '/successOrder', query: { id: val.number}})
-                } else {
-                    this.$router.push({ path: '/orderdetails', query: { id: val.number }}) // 药店 自提详情
-                }
-                
-            },
         }
 }
 </script>
 
-<style>
-
-</style>
 <style lang="scss" scoped>
 @function rem($px) {
     @return $px / 50 + rem;
@@ -321,7 +114,7 @@ export default {
         padding-bottom: rem(2);
         background-color: #fff;
         ul {
-            height: rem(46);
+            height: rem(48);
             padding: 0 rem(20);
             font-size: rem(14);
             li {

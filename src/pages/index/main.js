@@ -50,7 +50,7 @@ window.addEventListener('online',  function() {
  })
 import '@/utils/mate.js'
 // 环信挂载全局
-import { conn, WebIM } from '@/common/js/WebIM.js';
+import { conn, WebIM } from '@/common/js/newWebim.js';
 
 Vue.prototype.$WebIM = WebIM
 Vue.prototype.$imConn = conn;
