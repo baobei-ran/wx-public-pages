@@ -29,7 +29,6 @@ const WebIM = window.WebIM = websdk;
 var config = {
     xmppURL: 'im-api.easemob.com',
     https: false,
-    apiUrl: WebIM.config.apiURL,
     apiURL: (window.location.protocol === 'https:' ? 'https:' : 'http:') + '//a1.easemob.com',
     appkey: '1100181025211076#yyk-doctor',
     https: false,

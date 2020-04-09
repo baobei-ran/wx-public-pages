@@ -50,8 +50,8 @@ window.addEventListener('online',  function() {
  })
 import '@/utils/mate.js'
 // 环信挂载全局
-import { conn, WebIM } from '@/common/js/newWebim.js';
-
+import { conn, WebIM } from '@/common/js/newWebim.js';  // 新版
+// import { conn, WebIM } from '@/common/js/WebIM.js';  // 旧版
 Vue.prototype.$WebIM = WebIM
 Vue.prototype.$imConn = conn;
 import isMoble from '@/utils/ismoble';
